@@ -118,7 +118,7 @@ Music * music_init (){
 }
 
 void music_free (void * m){
-  if(m) free(m);
+  if(m) {free(m);}
 }
 const char* music_getTitle (const Music * m){
 
@@ -238,20 +238,23 @@ long music_getId (const Music * m){
 }
 
 int music_formatted_print (FILE * pf, const void * m) {
-	Music * aux;
-	int counter = 0, minutes, sec;
-	if (!pf || !m) return -1;
+        Music * aux;
+        int counter = 0, minutes, sec;
+        if (!pf || !m) return -1;
 
-	aux = (Music*) m;
+        aux = (Music*) m;
 
-	minutes = aux->duration / 60;
-  sec = aux->duration % 60;
+        if (!aux->duration || aux->duration <= 0) return -1;
+        minutes = aux->duration / 60;
+    sec = aux->duration % 60;
 
-	counter = fprintf(pf, "\t NOW PLAYING: %s\n", aux->title);
-	counter += fprintf(pf, "\t * Artist: %s *\n", aux->artist);
-	counter += fprintf(pf, "\t--------------------------\n");
-	counter += fprintf(pf, "\t    <<  ||  >>\n");
-	counter += fprintf(pf, "\t %02d:%02d / %02d:%02d ------O--\n\n", 0, 0, minutes, sec);
+        counter = fprintf(pf, "\t ɴᴏᴡ ᴘʟᴀʏɪɴɢ: %s\n", aux->title);
+        counter += fprintf(pf, "\t • Artist %s •\n", aux->artist);
+        counter += fprintf(pf, "\t──────────⚪──────────\n");
+        counter += fprintf(pf, "\t\t◄◄⠀▐▐ ⠀►►\n");
+        counter += fprintf(pf, "\t 0:00 / %02d:%02d ───○ 🔊⠀\n\n", minutes, sec);
 
-	return counter;
+        return counter;
 }
+
+
