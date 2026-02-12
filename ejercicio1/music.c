@@ -198,8 +198,12 @@ void * music_copy (const void * src){
   Music * source = NULL;
   Music * dest = NULL;
   
+ 
+  if(!src) return NULL; 
+  
   dest = music_init();
-  if(!src || !dest) return NULL; 
+  
+  if(!dest) return NULL; 
 
   source = (Music *)src;
   strcpy(dest->artist, source->artist);
@@ -221,6 +225,7 @@ State music_getState (const Music * m){
 
   return m->status;
 }
+
 int music_plain_print (FILE * pf, const void * m){
 
   Music * music = NULL;
@@ -236,7 +241,6 @@ long music_getId (const Music * m){
   if(!m) return (ERROR_I);
   return m->id;
 }
-
 int music_formatted_print (FILE * pf, const void * m) {
         Music * aux;
         int counter = 0, minutes, sec;
@@ -256,5 +260,3 @@ int music_formatted_print (FILE * pf, const void * m) {
 
         return counter;
 }
-
-

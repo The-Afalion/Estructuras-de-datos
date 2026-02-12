@@ -8,10 +8,9 @@ int main() {
     printf("Initializing songs...\n");
     m1 = music_init();
     m2 = music_init();
-    m3 = music_init();
 
 
-    if (!m1 || !m2 || !m3) {
+    if (!m1 || !m2) {
         printf("Error initializing songs.\n");
         return 1;
     }
@@ -34,8 +33,11 @@ int main() {
 
     // Configure m3 (copy of m1 to test comparison)
     m3 = (Music *)music_copy(m1);
-    if(m3 == NULL) return 1;
-
+    if(m3 == NULL) 
+    {
+        printf("Error initializing songs.\n");
+        return 1;
+    }
 
     //Print of the firsts songs
     // printf("\n--- Printing Song 1 ---\n");
