@@ -49,7 +49,7 @@ int main() {
     //Comparing funtions
 
     // printf("\n--- Comparing Songs ---\n");
-    printf("Equals? ");
+    printf("Equals? ", (noEqual == FALSE) ? "Yes\n" : "No\n");
      
     
     

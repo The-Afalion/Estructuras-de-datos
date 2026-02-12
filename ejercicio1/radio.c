@@ -1,6 +1,6 @@
 /**
  * @file radio.c
- * @author Your Name
+ * @author Rodrigo y Rafael
  * @date March 2024
  * @version 1.0
  * @brief Implementation of the Radio TAD
