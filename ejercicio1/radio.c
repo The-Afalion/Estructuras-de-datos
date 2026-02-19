@@ -146,14 +146,16 @@ int radio_print(FILE *pf, const Radio *r) {
 }
 
 Status radio_readFromFile(FILE *fin, Radio *r) {
-    char buff[STR_LENGTH * 5];
+    char buff[STR_LENGTH * 5], *line;
     int num_songs, i;
     long orig_id, dest_id;
+    char *token;
 
     if (!fin || !r) return ERROR;
 
     /* Read number of songs */
-    if (fscanf(fin, "%d\n", &num_songs) != 1) return ERROR;
+    if (fgets(buff, sizeof(buff), fin) == NULL) return ERROR;
+    if (sscanf(buff, "%d", &num_songs) != 1) return ERROR;
 
     /* Read songs descriptions */
     for (i = 0; i < num_songs; i++) {
@@ -164,17 +166,17 @@ Status radio_readFromFile(FILE *fin, Radio *r) {
     }
 
     /* Read relations */
-    while (fscanf(fin, "%ld", &orig_id) == 1) {
-        /* Check for newline character to handle multiple destinations */
-        while (fgetc(fin) != '\n') {
-            if (fscanf(fin, "%ld", &dest_id) == 1) {
-                if (radio_newRelation(r, orig_id, dest_id) == ERROR) {
-                    /* Ignore relation if songs don't exist, but continue reading */
-                }
-            } else {
-                /* Malformed line, break inner loop */
-                break;
-            }
+    while (fgets(buff, sizeof(buff), fin) != NULL) {
+        line = buff;
+        /* Read first id */
+        token = strtok(line, " \n");
+        if (!token) continue;
+        orig_id = atol(token);
+
+        /* Read destination ids */
+        while ((token = strtok(NULL, " \n")) != NULL) {
+            dest_id = atol(token);
+            radio_newRelation(r, orig_id, dest_id);
         }
     }
 
