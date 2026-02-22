@@ -1,9 +1,12 @@
 ########################################################
 CC=gcc
-# CFLAGS= -g -Wall -pedantic
 CFLAGS= -g -Wall -pedantic
-# EJS = p1_e1
-EJS = p1_e1 p1_e2 p1_e3
+##################################################
+EJS = p1_e1
+EJS_2 = p2_e2
+EJS_3 = p3_e3
+EJS_ALL = p1_e1 p1_e2 p1_e3
+################################################
 DEBUG = valgrind
 
 ########################################################
@@ -12,10 +15,12 @@ OBJECTSP1E2 = p1_e2.o radio.o music.o
 OBJECTSP1E3 = p1_e3.o radio.o music.o
 ########################################################
 
-all: $(EJS)
+all: $(EJS_ALL)
+	make $(EJS_ALL)
 
 p1_e1_DEBUG:  p1_e1
 	$(DEBUG) ./p1_e1
+
 
 p1_e1: $(OBJECTSP1E1)
 	$(CC) $(CFLAGS) -o $@ $(OBJECTSP1E1)

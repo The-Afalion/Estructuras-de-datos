@@ -207,8 +207,10 @@ long *radio_getRelationsFromId(const Radio *r, long id) {
     count = radio_getNumberOfRelationsFromId(r, id);
     if (count <= 0) return NULL;
 
-    array = (long *) malloc(count * sizeof(long));
+    array = (long *) malloc((count) * sizeof(long));
     if (!array) return NULL;
+
+
 
     for (i = 0; i < r->num_music; i++) {
         if (r->relations[idx][i] == TRUE) {

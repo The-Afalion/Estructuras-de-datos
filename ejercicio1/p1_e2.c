@@ -1,44 +1,72 @@
 #include <stdio.h>
 #include "radio.h"
 
-int main() {
-    Radio *r = NULL;
+#define ID_orig 222
+#define ID_dest 111
 
-    printf("Initializing radio...\n");
+int main() {
+    Radio    *r = NULL;
+    long*    reco_music = NULL;
+    int      num_relations_dest = 0;
+
     r = radio_init();
     if (!r) {
-        printf("Error initializing radio.\n");
+        printf("ERROR: Error initializing radio.\n");
         return 1;
     }
+    //Inserting Musics in Radio    
+    printf("Inserting Paint It, Black... result...: %d", (int)radio_newMusic(r, "id:\"111\" title:\"Paint It, Black\" artist:\"The Rolling Stones\" duration:\"202\""));
+    printf("\n");
+    
+    printf("Inserting Every Breath You Take... result...: %d",(int)radio_newMusic(r, "id:\"222\" title:\"Every Breath You Take\" artist:\"The Police\" duration:\"253\""));
+    printf("\n\n");
 
-    printf("\n--- Adding songs ---\n");
-    radio_newMusic(r, "id:\"10\" title:\"Song A\" artist:\"Artist 1\" duration:\"180\"");
-    radio_newMusic(r, "id:\"20\" title:\"Song B\" artist:\"Artist 2\" duration:\"220\"");
-    radio_newMusic(r, "id:\"30\" title:\"Song C\" artist:\"Artist 3\" duration:\"200\"");
+    //Inserting relations betwen musics in Radio    
+    if(radio_newRelation(r, ID_orig, ID_dest) == ERROR){
+        printf("ERROR: Can't Insert radio recomendation\n");
+    }else{
+        printf("inserting radio recomendation: %d --> %d\n\n", ID_orig, ID_dest);
+    }
 
-    printf("Total songs in radio: %d\n", radio_getNumberOfMusic(r));
 
-    printf("\n--- Adding relations ---\n");
-    printf("Adding relation 10 -> 20\n");
-    radio_newRelation(r, 10, 20);
-    printf("Adding relation 10 -> 30\n");
-    radio_newRelation(r, 10, 30);
-    printf("Adding relation 30 -> 10 (cycle)\n");
-    radio_newRelation(r, 30, 10);
 
-    printf("Total relations in radio: %d\n", radio_getNumberOfRelations(r));
 
-    printf("\n--- Checking relations ---\n");
-    printf("Relation 10 -> 20 exists? (1=YES, 0=NO): %d\n", radio_relationExists(r, 10, 20));
-    printf("Relation 20 -> 10 exists? (1=YES, 0=NO): %d\n", radio_relationExists(r, 20, 10));
-    printf("Relation 30 -> 10 exists? (1=YES, 0=NO): %d\n", radio_relationExists(r, 30, 10));
+    printf("%d --> %d? ", ID_dest, ID_orig);
+    if(radio_relationExists(r, ID_dest, ID_orig) == TRUE){
+        printf("Yes\n");
+    }else{
+        printf("No\n");
+    }
+    printf("%d --> %d? ", ID_orig, ID_dest);
+    if(radio_relationExists(r, ID_orig, ID_dest) == TRUE){
+        printf("Yes\n\n");
+    }else{
+        printf("No\n");
+    }
+    num_relations_dest = radio_getNumberOfRelationsFromId(r, ID_orig);
+    printf("Number of Connections from %d: %d\n", ID_dest, radio_getNumberOfRelationsFromId(r, ID_dest));
+    printf("Number of Connections from %d: %d\n\n", ID_orig,num_relations_dest);
 
-    printf("\n--- Printing full radio ---\n");
+
+
+    reco_music = radio_getRelationsFromId(r, ID_orig);
+    if(reco_music == NULL || num_relations_dest < 0){
+        printf("ERROR: Can't created array with relations of %d", ID_dest);
+    }
+    printf("Radio recomendations from Paint It, Black: ");
+    for (int i = 0; i < num_relations_dest; i++)
+        printf("%ld ", reco_music[i]);
+    printf("\n\n");
+
+
+
+    printf("All radio recomendations: \n");
     radio_print(stdout, r);
 
-    printf("\nFreeing radio memory...\n");
-    radio_free(r);
+    printf("\n\n");
 
-    printf("Done.\n");
+    radio_free(r);
+    free(reco_music);
+
     return 0;
 }

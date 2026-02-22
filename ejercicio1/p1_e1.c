@@ -5,7 +5,6 @@ int main() {
     Music   *m1 = NULL, *m2 = NULL, *m3 = NULL;
     Bool    noEqual;
 
-    printf("Initializing songs...\n");
     m1 = music_init();
     m2 = music_init();
 
@@ -49,7 +48,11 @@ int main() {
     //Comparing funtions
 
     // printf("\n--- Comparing Songs ---\n");
-    printf("Equals? ", (noEqual == FALSE) ? "Yes\n" : "No\n");
+    printf("Equals? ");
+    if(noEqual == FALSE)  
+        printf("Yes\n");
+    else
+        printf("No\n");
      
     
     
