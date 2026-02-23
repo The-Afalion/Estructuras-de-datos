@@ -24,7 +24,7 @@ typedef struct _Radio Radio;
  * @return A pointer to the radio if it was correctly allocated,
  * NULL otherwise.
  **/
-Radio * radio_init();
+Radio* radio_init();
 
 /**
  * @brief Frees a radio.
@@ -33,7 +33,7 @@ Radio * radio_init();
  *
  * @param r Pointer to radio to be free.
  **/
-void radio_free(Radio *r);
+void radio_free(Radio* r);
 
 /**
  * @brief Inserts a new music in a radio.
@@ -48,7 +48,7 @@ void radio_free(Radio *r);
  * @return Returns OK if the music could be created (or if it exists
  * already), ERROR otherwise.
  **/
-Status radio_newMusic(Radio *r, char *desc);
+Status radio_newMusic(Radio* r, char* desc);
 
 /**
  * @brief Creates a relation between two music of a radio.
@@ -62,7 +62,7 @@ Status radio_newMusic(Radio *r, char *desc);
  *
  * @return OK if the relation could be added to the radio, ERROR otherwise.
  **/
-Status radio_newRelation(Radio *r, long orig, long dest);
+Status radio_newRelation(Radio* r, long orig, long dest);
 
 /**
  * @brief Checks if a radio contains a music.
@@ -73,7 +73,7 @@ Status radio_newRelation(Radio *r, long orig, long dest);
  * @return Returns TRUE if there is a music in the radio g with the
  * ID id, FALSE otherwise.
  **/
-Bool radio_contains(const Radio *r, long id);
+Bool radio_contains(const Radio* r, long id);
 
 /**
  * @brief Returns the total number of music in a radio.
@@ -83,7 +83,7 @@ Bool radio_contains(const Radio *r, long id);
  * @return Returns The number of music in the radio, or -1 if
  * there is any error.
  **/
-int radio_getNumberOfMusic(const Radio *r);
+int radio_getNumberOfMusic(const Radio* r);
 
 /**
  * @brief Returns the total number of relations in the radio.
@@ -93,7 +93,7 @@ int radio_getNumberOfMusic(const Radio *r);
  * @return Returns The number of relations in the radio, or -1 if
  * there is any error.
  **/
-int radio_getNumberOfRelations(const Radio *r);
+int radio_getNumberOfRelations(const Radio* r);
 
 /**
  * @brief Determines if there is a relation between a pair of music.
@@ -105,7 +105,7 @@ int radio_getNumberOfRelations(const Radio *r);
  * @return Returns TRUE if there is a relation in r from orig
  *  to dest, FALSE otherwise.
  **/
-Bool radio_relationExists(const Radio *r, long orig, long dest);
+Bool radio_relationExists(const Radio* r, long orig, long dest);
 
 /**
  * @brief Gets the number of relations starting at a given music.
@@ -116,7 +116,7 @@ Bool radio_relationExists(const Radio *r, long orig, long dest);
  * @return Returns the total number of relation starting at
  * music with ID id, or -1 if there is any error.
  **/
-int radio_getNumberOfRelationsFromId(const Radio *r, long id);
+int radio_getNumberOfRelationsFromId(const Radio* r, long id);
 
 /**
  * @brief Returns an array with the ids of all the music which a
@@ -130,8 +130,7 @@ int radio_getNumberOfRelationsFromId(const Radio *r, long id);
  * @return Returns an array with the ids of all the music to which
  * the music with ID id is connected, or NULL if there is any error.
  */
-long *radio_getRelationsFromId(const Radio *r, long id);
-
+long* radio_getRelationsFromId(const Radio* r, long id);
 
 /**
  * @brief Prints a radio.
@@ -143,17 +142,18 @@ long *radio_getRelationsFromId(const Radio *r, long id);
  * For example:
  * [317, Golden, Huntrix, 194, 0]:
  * [482, Watermelon Sugar, Harry Styles, 174, 0]: [317, Golden, Huntrix, 194, 0]
- * [105, Don't Stop Believin, Journey, 251, 0]: [231, Livin' on a Prayer, Bon Jovi, 249, 0]
- * [231, Livin' on a Prayer, Bon Jovi, 249, 0]: [105, Don't Stop Believin, Journey, 251, 0] [764, Sweet Child O' Mine, Guns N' Roses, 356, 0]
- * [764, Sweet Child O' Mine, Guns N' Roses, 356, 0]: [231, Livin' on a Prayer, Bon Jovi, 249, 0]
+ * [105, Don't Stop Believin, Journey, 251, 0]: [231, Livin' on a Prayer, Bon
+ * Jovi, 249, 0] [231, Livin' on a Prayer, Bon Jovi, 249, 0]: [105, Don't Stop
+ * Believin, Journey, 251, 0] [764, Sweet Child O' Mine, Guns N' Roses, 356, 0]
+ * [764, Sweet Child O' Mine, Guns N' Roses, 356, 0]: [231, Livin' on a Prayer,
+ * Bon Jovi, 249, 0]
  *
  * @param pf File descriptor.
  * @param r Pointer to the radio.
  *
  * @return The number of characters printed, or -1 if there is any error.
  */
-int radio_print (FILE *pf, const Radio *r);
-
+int radio_print(FILE* pf, const Radio* r);
 
 /**
  * @brief Reads a radio definition from a text file.
@@ -184,6 +184,6 @@ int radio_print (FILE *pf, const Radio *r);
  *
  * @return OK or ERROR
  */
-Status radio_readFromFile (FILE *fin, Radio *r);
+Status radio_readFromFile(FILE* fin, Radio* r);
 
 #endif /* radio_H */

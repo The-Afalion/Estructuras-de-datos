@@ -6,10 +6,11 @@
  * @brief Implementation of the Radio TAD
  */
 
+#include "radio.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "radio.h"
 
 #define MAX_MSC 4096
 
@@ -24,7 +25,7 @@ struct _Radio {
 };
 
 /* Private function to find the index of a music by its ID */
-int radio_findId(const Radio *r, long id) {
+int radio_findId(const Radio* r, long id) {
     int i;
     if (!r) return -1;
     for (i = 0; i < r->num_music; i++) {
@@ -35,8 +36,8 @@ int radio_findId(const Radio *r, long id) {
     return -1; /* Not found */
 }
 
-Radio * radio_init() {
-    Radio *r = (Radio *) malloc(sizeof(Radio));
+Radio* radio_init() {
+    Radio* r = (Radio*)malloc(sizeof(Radio));
     if (!r) return NULL;
 
     r->num_music = 0;
@@ -51,7 +52,7 @@ Radio * radio_init() {
     return r;
 }
 
-void radio_free(Radio *r) {
+void radio_free(Radio* r) {
     if (!r) return;
     for (int i = 0; i < r->num_music; i++) {
         music_free(r->songs[i]);
@@ -59,8 +60,8 @@ void radio_free(Radio *r) {
     free(r);
 }
 
-Status radio_newMusic(Radio *r, char *desc) {
-    Music *m;
+Status radio_newMusic(Radio* r, char* desc) {
+    Music* m;
     if (!r || !desc) return ERROR;
     if (r->num_music >= MAX_MSC) return ERROR;
 
@@ -69,7 +70,7 @@ Status radio_newMusic(Radio *r, char *desc) {
 
     if (radio_contains(r, music_getId(m)) == TRUE) {
         music_free(m); /* Already exists, free the new one */
-        return OK; /* As per header, OK if it already exists */
+        return OK;     /* As per header, OK if it already exists */
     }
 
     r->songs[r->num_music] = m;
@@ -78,7 +79,7 @@ Status radio_newMusic(Radio *r, char *desc) {
     return OK;
 }
 
-Status radio_newRelation(Radio *r, long orig, long dest) {
+Status radio_newRelation(Radio* r, long orig, long dest) {
     int idx_orig, idx_dest;
     if (!r) return ERROR;
 
@@ -97,22 +98,22 @@ Status radio_newRelation(Radio *r, long orig, long dest) {
     return OK;
 }
 
-Bool radio_contains(const Radio *r, long id) {
+Bool radio_contains(const Radio* r, long id) {
     if (!r) return FALSE;
     return (radio_findId(r, id) != -1);
 }
 
-int radio_getNumberOfMusic(const Radio *r) {
+int radio_getNumberOfMusic(const Radio* r) {
     if (!r) return -1;
     return r->num_music;
 }
 
-int radio_getNumberOfRelations(const Radio *r) {
+int radio_getNumberOfRelations(const Radio* r) {
     if (!r) return -1;
     return r->num_relations;
 }
 
-Bool radio_relationExists(const Radio *r, long orig, long dest) {
+Bool radio_relationExists(const Radio* r, long orig, long dest) {
     int idx_orig, idx_dest;
     if (!r) return FALSE;
 
@@ -126,7 +127,7 @@ Bool radio_relationExists(const Radio *r, long orig, long dest) {
     return r->relations[idx_orig][idx_dest];
 }
 
-int radio_print(FILE *pf, const Radio *r) {
+int radio_print(FILE* pf, const Radio* r) {
     int chars = 0, i, j;
     if (!pf || !r) return -1;
 
@@ -145,22 +146,28 @@ int radio_print(FILE *pf, const Radio *r) {
     return chars;
 }
 
-Status radio_readFromFile(FILE *fin, Radio *r) {
+Status radio_readFromFile(FILE* fin, Radio* r) {
     char buff[STR_LENGTH * 5];
     int num_songs, i;
     long orig_id, dest_id;
 
-    if (!fin || !r) return ERROR;
+    if (!fin || !r) {
+        return ERROR;
+    }
+    // We can read wiht a while  too but this is better for now
+    if (fscanf(fin, "%d\n", &num_songs) != 1) {
+        return ERROR;
+    }
 
-    /* Read number of songs */
-    if (fscanf(fin, "%d\n", &num_songs) != 1) return ERROR;
-
-    /* Read songs descriptions */
     for (i = 0; i < num_songs; i++) {
-        if (fgets(buff, sizeof(buff), fin) == NULL) return ERROR;
-        /* Remove trailing newline */
+        if (fgets(buff, sizeof(buff), fin) == NULL) {
+            return ERROR;
+        }
+
         buff[strcspn(buff, "\n")] = 0;
-        if (radio_newMusic(r, buff) == ERROR) return ERROR;
+        if (radio_newMusic(r, buff) == ERROR) {
+            return ERROR;
+        }
     }
 
     /* Read relations */
@@ -169,7 +176,8 @@ Status radio_readFromFile(FILE *fin, Radio *r) {
         while (fgetc(fin) != '\n') {
             if (fscanf(fin, "%ld", &dest_id) == 1) {
                 if (radio_newRelation(r, orig_id, dest_id) == ERROR) {
-                    /* Ignore relation if songs don't exist, but continue reading */
+                    /* Ignore relation if songs don't exist, but continue
+                     * reading */
                 }
             } else {
                 /* Malformed line, break inner loop */
@@ -181,8 +189,7 @@ Status radio_readFromFile(FILE *fin, Radio *r) {
     return OK;
 }
 
-/* Extra functions from radio.h that are not part of the exercise but needed to compile */
-int radio_getNumberOfRelationsFromId(const Radio *r, long id) {
+int radio_getNumberOfRelationsFromId(const Radio* r, long id) {
     int idx, count = 0;
     if (!r) return -1;
     idx = radio_findId(r, id);
@@ -196,9 +203,9 @@ int radio_getNumberOfRelationsFromId(const Radio *r, long id) {
     return count;
 }
 
-long *radio_getRelationsFromId(const Radio *r, long id) {
+long* radio_getRelationsFromId(const Radio* r, long id) {
     int idx, count, i, j = 0;
-    long *array;
+    long* array;
 
     if (!r) return NULL;
     idx = radio_findId(r, id);
@@ -207,10 +214,8 @@ long *radio_getRelationsFromId(const Radio *r, long id) {
     count = radio_getNumberOfRelationsFromId(r, id);
     if (count <= 0) return NULL;
 
-    array = (long *) malloc((count) * sizeof(long));
+    array = (long*)malloc((count) * sizeof(long));
     if (!array) return NULL;
-
-
 
     for (i = 0; i < r->num_music; i++) {
         if (r->relations[idx][i] == TRUE) {

@@ -15,6 +15,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+
 #include "types.h"
 
 #define STR_LENGTH 64
@@ -25,7 +26,7 @@
  **/
 typedef enum {
     NOT_LISTENED, /*!< Music not visited */
-    LISTENED,  /*!< Music visited */
+    LISTENED,     /*!< Music visited */
     ERROR_MUSIC   /*!< not valid Music */
 } State;
 
@@ -35,12 +36,8 @@ typedef enum {
  *
  **/
 /* START [Music] */
-
-
-
 typedef struct _Music Music;
 /* END [Music] */
-
 
 /**
  * @brief Constructor. Initialize a Music.
@@ -56,9 +53,8 @@ typedef struct _Music Music;
  *
  * @return Return the initialized Music if it was done correctly,
  * otherwise return NULL.
-*/
-Music * music_init ();
-
+ */
+Music* music_init();
 
 /**
  * @brief Constructor. Initialize a Music from its description.
@@ -81,16 +77,15 @@ Music * music_init ();
  *
  * @return Return the initialized Music if it was done correctly,
  * otherwise return NULL.
-*/
-Music *music_initFromString(char *descr);
+ */
+Music* music_initFromString(char* descr);
 
 /**
  * @brief Destructor. Free the dynamic memory reserved for a Music .
  *
  * @param m Music to free
  */
-void music_free (void * m);
-
+void music_free(void* m);
 
 /**
  * @brief  Gets the Music id.
@@ -99,8 +94,7 @@ void music_free (void * m);
  *
  * @return  Returns the id of the given Music, or -1 in case of error.
  */
-long music_getId (const Music * m);
-
+long music_getId(const Music* m);
 
 /**
  * @brief Gets the Music title.
@@ -110,8 +104,7 @@ long music_getId (const Music * m);
  * @return Returns a pointer to the title of the Music, or NULL in
  * case of error.
  */
-const char* music_getTitle (const Music * m);
-
+const char* music_getTitle(const Music* m);
 
 /**
  * @brief Gets the Music artist.
@@ -121,8 +114,7 @@ const char* music_getTitle (const Music * m);
  * @return Returns a pointer to the artist of the Music, or NULL in
  * case of error.
  */
-const char* music_getArtist (const Music * m);
-
+const char* music_getArtist(const Music* m);
 
 /**
  * @brief Gets the Music duration.
@@ -131,8 +123,7 @@ const char* music_getArtist (const Music * m);
  *
  * @return Returns the duration of the given Music, or -1 in case of error.
  */
-unsigned short music_getDuration (const Music * m);
-
+unsigned short music_getDuration(const Music* m);
 
 /**
  * @brief Gets the state of a given Music.
@@ -142,8 +133,7 @@ unsigned short music_getDuration (const Music * m);
  * @return Returns the state of a given Music, or ERROR_Music in
  * case of error.
  */
-State music_getState (const Music * m);
-
+State music_getState(const Music* m);
 
 /**
  * @brief Modifies the id of a given Music.
@@ -153,8 +143,7 @@ State music_getState (const Music * m);
  *
  * @return Returns OK or ERROR in case of error
  */
-Status music_setId (Music * m, const long id);
-
+Status music_setId(Music* m, const long id);
 
 /**
  * @brief Modifies the title of a given Music
@@ -164,8 +153,7 @@ Status music_setId (Music * m, const long id);
  *
  * @return  Returns OK or ERROR in case of error.
  */
-Status music_setTitle (Music * m, const char * title);
-
+Status music_setTitle(Music* m, const char* title);
 
 /**
  * @brief Modifies the artist of a given Music
@@ -175,8 +163,7 @@ Status music_setTitle (Music * m, const char * title);
  *
  * @return  Returns OK or ERROR in case of error.
  */
-Status music_setArtist (Music * m, const char * artist);
-
+Status music_setArtist(Music* m, const char* artist);
 
 /**
  * @brief Modifies the duration of a given Music
@@ -186,8 +173,7 @@ Status music_setArtist (Music * m, const char * artist);
  *
  * @return  Returns OK or ERROR in case of error.
  */
-Status music_setDuration (Music * m, const unsigned short duration);
-
+Status music_setDuration(Music* m, const unsigned short duration);
 
 /**
  * @brief Modifies the state of a given Music
@@ -197,9 +183,7 @@ Status music_setDuration (Music * m, const unsigned short duration);
  *
  * @return Returns OK or ERROR in case of error.
  */
-Status music_setState (Music * m, const State state);
-
-
+Status music_setState(Music* m, const State state);
 
 /**
  * @brief Compares two music.
@@ -215,8 +199,7 @@ Status music_setState (Music * m, const State state);
  * comparing their titles if they are different. If they are equal, then
  * returns the result of comparing their artists
  */
-int music_cmp (const void * m1, const void * m2);
-
+int music_cmp(const void* m1, const void* m2);
 
 /**
  * @brief Reserves memory for a Music where it copies the data from
@@ -238,15 +221,14 @@ int music_cmp (const void * m1, const void * m2);
  * @return Returns the pointer of the copied Music if everything
  * went well, or NULL otherwise.
  */
-void * music_copy (const void * src);
-
+void* music_copy(const void* src);
 
 /**
  * @brief Prints in pf the data of a Music.
  *
- * Prints the music information without format: [id, title, artist, duration, state], without
- * line break at the end.
- * The type State is an enumeration so it can be printed as an int.
+ * Prints the music information without format: [id, title, artist, duration,
+ * state], without line break at the end. The type State is an enumeration so it
+ * can be printed as an int.
  *
  * @code
  * Music * m;
@@ -260,8 +242,7 @@ void * music_copy (const void * src);
  * @return Returns the number of characters that have been written
  * successfully. If there have been errors returns -1.
  */
-int music_plain_print (FILE * pf, const void * m);
-
+int music_plain_print(FILE* pf, const void* m);
 
 /**
  * @brief Prints in pf the formatted data of a Music.
@@ -284,7 +265,6 @@ int music_plain_print (FILE * pf, const void * m);
  * @return Returns the number of characters that have been written
  * successfully. If there have been errors returns -1.
  */
-int music_formatted_print (FILE * pf, const void * m);
-
+int music_formatted_print(FILE* pf, const void* m);
 
 #endif /* Music_H_ */
