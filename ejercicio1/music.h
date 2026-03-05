@@ -227,22 +227,22 @@ void* music_copy(const void* src);
  * @brief Prints in pf the data of a Music.
  *
  * Prints the music information without format: [id, title, artist, duration,
- * connections], without line break at the end.
+ * state], without line break at the end. The type State is an enumeration so it
+ * can be printed as an int.
  *
  * @code
  * Music * m;
  * m = music_init();
- * music_plain_print (stdout, v, 5);
+ * music_plain_print (stdout, v);
  * @endcode
  *
  * @param pf File descriptor
  * @param m Music to be printed
- * @param connections Number of connections to print
  *
  * @return Returns the number of characters that have been written
  * successfully. If there have been errors returns -1.
  */
-int music_plain_print(FILE* pf, const void* m, int connections);
+int music_plain_print(FILE* pf, const void* m);
 
 /**
  * @brief Prints in pf the formatted data of a Music.

@@ -215,13 +215,13 @@ State music_getState(const Music* m) {
     return m->status;
 }
 
-int music_plain_print(FILE* pf, const void* m, int connections) {
+int music_plain_print(FILE* pf, const void* m) {
     Music* music = NULL;
     if (!pf || !m) return (ERROR_I);
 
     music = (Music*)m;
     return (fprintf(pf, "[%ld, %s, %s, %hu, %d]", music->id, music->title,
-                    music->artist, music->duration, connections));
+                    music->artist, music->duration, music->status));
 }
 long music_getId(const Music* m) {
     if (!m) return (ERROR_I);
