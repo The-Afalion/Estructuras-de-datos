@@ -132,13 +132,15 @@ int radio_print(FILE* pf, const Radio* r) {
     if (!pf || !r) return -1;
 
     for (i = 0; i < r->num_music; i++) {
-        chars += music_plain_print(pf, r->songs[i]);
+        int connections = radio_getNumberOfRelationsFromId(r, music_getId(r->songs[i]));
+        chars += music_plain_print(pf, r->songs[i], connections);
         chars += fprintf(pf, ":");
 
         for (j = 0; j < r->num_music; j++) {
             if (r->relations[i][j] == TRUE) {
                 chars += fprintf(pf, " ");
-                chars += music_plain_print(pf, r->songs[j]);
+                int conn_j = radio_getNumberOfRelationsFromId(r, music_getId(r->songs[j]));
+                chars += music_plain_print(pf, r->songs[j], conn_j);
             }
         }
         chars += fprintf(pf, "\n");
