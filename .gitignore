@@ -1,0 +1,11 @@
+*.o
+*.a
+p2_e1
+p2_e2a
+p2_e2b
+p2_e3
+p2_testbench
+.idea/
+build_errors.txt
+build_output.txt
+*.exe
