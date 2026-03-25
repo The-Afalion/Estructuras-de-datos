@@ -273,7 +273,7 @@ long *radio_getRelationsFromId(const Radio *r, long id) {
   int idx, count, i, j;
   long *array = NULL;
 
-  if (!r) {
+  if (!r || id<0) {
     return NULL;
   }
 
@@ -368,18 +368,13 @@ Status radio_readFromFile(FILE *fin, Radio *r) {
       return ERROR;
     }
   }
-
-  while (fscanf(fin, "%ld", &orig_id) == 1) {
-    while ((ch = fgetc(fin)) != '\n' && ch != EOF) {
-      if (fscanf(fin, "%ld", &dest_id) == 1) {
-        if (radio_newRelation(r, orig_id, dest_id) == ERROR) {
-          continue;
-        }
-      } else {
-        break;
-      }
+  while (fgets(buff, sizeof(buff), fin) != NULL) {
+    buff[strcspn(buff, "\r\n")] = '\0';
+    if (sscanf(buff, "%ld %ld", &orig_id, &dest_id) == 2) {
+        radio_newRelation(r, orig_id, dest_id);
     }
   }
+
 
   return OK;
 }

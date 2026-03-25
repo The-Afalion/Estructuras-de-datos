@@ -253,7 +253,7 @@ int music_getIndex(const Music* m) {
  * @return OK on success, ERROR otherwise.
  */
 Status music_setId(Music* m, const long id) {
-    if (!m)return ERROR;
+    if (!m || id <0)return ERROR;
 
     m->id = id;
     return OK;
