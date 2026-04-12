@@ -6,16 +6,20 @@ LDFLAGS = -L.
 LDLIBS = -lstack
 VALGRIND = valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes -s
 
-COMMON = music.o radio.o file_utils.o p2_utils.o
-MAIN_TARGETS = p2_e1 p2_e2a p2_e2b p2_e3
-STACK_TARGETS = p2_e1s p2_e2as p2_e2bs p2_e3s
-ALL_BINS = $(MAIN_TARGETS) $(STACK_TARGETS) p2_testbench
+COMMON = music.o radio.o queue.o
+TARGETS = p3_e1 p3_e2 p3_e3
+TEST_TARGETS = tb_p3_e1 tb_p3_e2 tb_p3_e3
 
-.PHONY: all clean libs run_e1 runv_e1 run_e2a runv_e2a run_e2b runv_e2b run_e3 runv_e3 \
-        run_e1s runv_e1s run_e2as runv_e2as run_e2bs runv_e2bs run_e3s runv_e3s \
-        run_testbench runv_testbench
+.PHONY: all clean libs tests check run_e1 runv_e1 run_e2 runv_e2 run_e3 runv_e3
 
-all: $(ALL_BINS)
+all: $(TARGETS)
+
+tests: $(TEST_TARGETS)
+
+check: all tests
+	./tb_p3_e1
+	./tb_p3_e2
+	./tb_p3_e3
 
 libs: libstack.a
 
@@ -25,86 +29,41 @@ libstack.a: stack.o
 %.o: %.c
 	$(CC) $(CFLAGS) $(IFLAGS) -c -o $@ $<
 
-p2_e1: p2_e1.o $(COMMON) libstack.a
-	$(CC) $(CFLAGS) -o $@ p2_e1.o $(COMMON) $(LDFLAGS) $(LDLIBS)
+p3_e1: p3_e1.o $(COMMON) libstack.a
+	$(CC) $(CFLAGS) -o $@ p3_e1.o $(COMMON) $(LDFLAGS) $(LDLIBS)
 
-p2_e2a: p2_e2a.o $(COMMON) libstack.a
-	$(CC) $(CFLAGS) -o $@ p2_e2a.o $(COMMON) $(LDFLAGS) $(LDLIBS)
+p3_e2: p3_e2.o $(COMMON) libstack.a
+	$(CC) $(CFLAGS) -o $@ p3_e2.o $(COMMON) $(LDFLAGS) $(LDLIBS)
 
-p2_e2b: p2_e2b.o $(COMMON) libstack.a
-	$(CC) $(CFLAGS) -o $@ p2_e2b.o $(COMMON) $(LDFLAGS) $(LDLIBS)
+p3_e3: p3_e3.o music.o radio.o queue.o list.o libstack.a
+	$(CC) $(CFLAGS) -o $@ p3_e3.o music.o radio.o queue.o list.o $(LDFLAGS) $(LDLIBS)
 
-p2_e3: p2_e3.o $(COMMON) libstack.a
-	$(CC) $(CFLAGS) -o $@ p2_e3.o $(COMMON) $(LDFLAGS) $(LDLIBS)
+tb_p3_e1: tb_p3_e1.o music.o radio.o queue.o libstack.a
+	$(CC) $(CFLAGS) -o $@ tb_p3_e1.o music.o radio.o queue.o $(LDFLAGS) $(LDLIBS)
 
-p2_e1s: p2_e1.o $(COMMON) stack.o
-	$(CC) $(CFLAGS) -o $@ p2_e1.o $(COMMON) stack.o
+tb_p3_e2: tb_p3_e2.o music.o radio.o queue.o libstack.a
+	$(CC) $(CFLAGS) -o $@ tb_p3_e2.o music.o radio.o queue.o $(LDFLAGS) $(LDLIBS)
 
-p2_e2as: p2_e2a.o $(COMMON) stack.o
-	$(CC) $(CFLAGS) -o $@ p2_e2a.o $(COMMON) stack.o
+tb_p3_e3: tb_p3_e3.o music.o radio.o queue.o list.o libstack.a
+	$(CC) $(CFLAGS) -o $@ tb_p3_e3.o music.o radio.o queue.o list.o $(LDFLAGS) $(LDLIBS)
 
-p2_e2bs: p2_e2b.o $(COMMON) stack.o
-	$(CC) $(CFLAGS) -o $@ p2_e2b.o $(COMMON) stack.o
+run_e1: p3_e1
+	./p3_e1 radio.txt
 
-p2_e3s: p2_e3.o $(COMMON) stack.o
-	$(CC) $(CFLAGS) -o $@ p2_e3.o $(COMMON) stack.o
+runv_e1: p3_e1
+	$(VALGRIND) ./p3_e1 radio.txt
 
-p2_testbench: p2_testbench.o $(COMMON) libstack.a
-	$(CC) $(CFLAGS) -o $@ p2_testbench.o $(COMMON) $(LDFLAGS) $(LDLIBS)
+run_e2: p3_e2
+	./p3_e2 radio_bfs.txt 1 10
 
-run_e1: p2_e1
-	./p2_e1 radio.txt
+runv_e2: p3_e2
+	$(VALGRIND) ./p3_e2 radio_bfs.txt 1 10
 
-runv_e1: p2_e1
-	$(VALGRIND) ./p2_e1 radio.txt
+run_e3: p3_e3
+	./p3_e3 radio_bfs.txt
 
-run_e2a: p2_e2a
-	./p2_e2a playlist1.txt playlist2.txt
-
-runv_e2a: p2_e2a
-	$(VALGRIND) ./p2_e2a playlist1.txt playlist2.txt
-
-run_e2b: p2_e2b
-	./p2_e2b playlistA.txt playlistB.txt
-
-runv_e2b: p2_e2b
-	$(VALGRIND) ./p2_e2b playlistA.txt playlistB.txt
-
-run_e3: p2_e3
-	./p2_e3 radio_dfs.txt 1 9
-
-runv_e3: p2_e3
-	$(VALGRIND) ./p2_e3 radio_dfs.txt 1 9
-
-run_e1s: p2_e1s
-	./p2_e1s radio.txt
-
-runv_e1s: p2_e1s
-	$(VALGRIND) ./p2_e1s radio.txt
-
-run_e2as: p2_e2as
-	./p2_e2as playlist1.txt playlist2.txt
-
-runv_e2as: p2_e2as
-	$(VALGRIND) ./p2_e2as playlist1.txt playlist2.txt
-
-run_e2bs: p2_e2bs
-	./p2_e2bs playlistA.txt playlistB.txt
-
-runv_e2bs: p2_e2bs
-	$(VALGRIND) ./p2_e2bs playlistA.txt playlistB.txt
-
-run_e3s: p2_e3s
-	./p2_e3s radio_dfs.txt 1 9
-
-runv_e3s: p2_e3s
-	$(VALGRIND) ./p2_e3s radio_dfs.txt 1 9
-
-run_testbench: p2_testbench
-	./p2_testbench
-
-runv_testbench: p2_testbench
-	$(VALGRIND) ./p2_testbench
+runv_e3: p3_e3
+	$(VALGRIND) ./p3_e3 radio_bfs.txt
 
 clean:
-	rm -f *.o *.a $(ALL_BINS)
+	rm -f *.o *.a $(TARGETS) $(TEST_TARGETS) tb_*.txt tb_*.out tb_*.err

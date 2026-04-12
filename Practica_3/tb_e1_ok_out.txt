@@ -1,0 +1,23 @@
+	 ɴᴏᴡ ᴘʟᴀʏɪɴɢ: Golden
+	 • Artist Huntrix •
+	──────────⚪──────────
+		◄◄⠀▐▐ ⠀►►
+	 0:00 / 03:14 ───○ 🔊⠀
+
+Playback queue:
+Queue (size 5): [317, Golden, Huntrix, 194, 0, 0], [482, Watermelon Sugar, Harry Styles, 174, 0, 1], [105, Don't Stop Believin, Journey, 251, 0, 2], [231, Livin' on a Prayer, Bon Jovi, 249, 0, 3], [764, Sweet Child O' Mine, Guns N' Roses, 356, 0, 4]
+
+1. Next song
+2. Exit
+Choose an option: 	 ɴᴏᴡ ᴘʟᴀʏɪɴɢ: Watermelon Sugar
+	 • Artist Harry Styles •
+	──────────⚪──────────
+		◄◄⠀▐▐ ⠀►►
+	 0:00 / 02:54 ───○ 🔊⠀
+
+Playback queue:
+Queue (size 4): [482, Watermelon Sugar, Harry Styles, 174, 0, 1], [105, Don't Stop Believin, Journey, 251, 0, 2], [231, Livin' on a Prayer, Bon Jovi, 249, 0, 3], [764, Sweet Child O' Mine, Guns N' Roses, 356, 0, 4]
+
+1. Next song
+2. Exit
+Choose an option: 

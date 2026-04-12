@@ -1,6 +1,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "queue.h"
+
+#define MAX_QUEUE 4096
+
 struct _Queue {
     void *data[MAX_QUEUE];
     void **front;

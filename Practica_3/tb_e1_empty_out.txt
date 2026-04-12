@@ -1,0 +1,9 @@
+
+No song currently playing.
+
+Playback queue:
+Queue (size 0): 
+
+1. Next song
+2. Exit
+Choose an option: 

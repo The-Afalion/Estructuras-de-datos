@@ -1,0 +1,25 @@
+Favorites list after insertion:
+[10, Stairway to Heaven, Led Zeppelin, 482, 0, 9]
+[8, Sweet Child O' Mine, Guns N' Roses, 356, 0, 7]
+[6, Billie Jean, Michael Jackson, 294, 0, 5]
+[4, Like a Rolling Stone, Bob Dylan, 369, 0, 3]
+[2, Hotel California, Eagles, 391, 0, 1]
+[1, Bohemian Rhapsody, Queen, 354, 0, 0]
+[3, Imagine, John Lennon, 183, 0, 2]
+[5, Smells Like Teen Spirit, Nirvana, 301, 0, 4]
+[7, Hey Jude, The Beatles, 431, 0, 6]
+[9, Wonderwall, Oasis, 258, 0, 8]
+
+Extracting first half from front:
+[10, Stairway to Heaven, Led Zeppelin, 482, 0, 9]
+[8, Sweet Child O' Mine, Guns N' Roses, 356, 0, 7]
+[6, Billie Jean, Michael Jackson, 294, 0, 5]
+[4, Like a Rolling Stone, Bob Dylan, 369, 0, 3]
+[2, Hotel California, Eagles, 391, 0, 1]
+
+Extracting second half from back:
+[9, Wonderwall, Oasis, 258, 0, 8]
+[7, Hey Jude, The Beatles, 431, 0, 6]
+[5, Smells Like Teen Spirit, Nirvana, 301, 0, 4]
+[3, Imagine, John Lennon, 183, 0, 2]
+[1, Bohemian Rhapsody, Queen, 354, 0, 0]

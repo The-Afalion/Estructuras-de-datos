@@ -147,4 +147,32 @@ Music* radio_getMusicAt(const Radio* r, int index);
  */
 Music* radio_getMusicById(const Radio* r, long id);
 
+/**
+ * @brief Runs an iterative depth-first search over the radio.
+ *
+ * The function prints each visited song while exploring the radio from one
+ * song id to another.
+ *
+ * @param r Pointer to the radio.
+ * @param from_id Origin song id.
+ * @param to_id Destination song id.
+ *
+ * @return OK if the destination is found, ERROR otherwise.
+ */
+Status radio_depthSearch(Radio* r, long from_id, long to_id);
+
+/**
+ * @brief Runs an iterative breadth-first search over the radio.
+ *
+ * The function prints each visited song while exploring the radio from one
+ * song id to another.
+ *
+ * @param r Pointer to the radio.
+ * @param from_id Origin song id.
+ * @param to_id Destination song id.
+ *
+ * @return OK if the destination is found, ERROR otherwise.
+ */
+Status radio_breadthSearch(Radio* r, long from_id, long to_id);
+
 #endif

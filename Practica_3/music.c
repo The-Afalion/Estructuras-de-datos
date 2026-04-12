@@ -14,6 +14,31 @@
 #include <string.h>
 
 /**
+ * @brief Parses a non-negative long value from text.
+ *
+ * @param text Input text.
+ * @param out Output value.
+ *
+ * @return OK on success, ERROR otherwise.
+ */
+static Status music_parseNonNegativeLong(const char *text, long *out) {
+    char *end = NULL;
+    long value;
+
+    if (!text || !out || *text == '\0') {
+        return ERROR;
+    }
+
+    value = strtol(text, &end, 10);
+    if (*end != '\0' || value < 0) {
+        return ERROR;
+    }
+
+    *out = value;
+    return OK;
+}
+
+/**
  * @brief Internal song representation.
  */
 struct _Music {
@@ -35,12 +60,17 @@ struct _Music {
  * @return OK on success, ERROR otherwise.
  */
 static Status music_setField(Music* m, char* key, char* value) {
+    long parsed = 0;
+
     if (!m || !key || !value) {
         return ERROR;
     }
 
     if (strcmp(key, "id") == 0 || strcmp(key, "iid") == 0) {
-        return music_setId(m, atol(value));
+        if (music_parseNonNegativeLong(value, &parsed) == ERROR) {
+            return ERROR;
+        }
+        return music_setId(m, parsed);
     }
     if (strcmp(key, "title") == 0) {
         return music_setTitle(m, value);
@@ -49,10 +79,16 @@ static Status music_setField(Music* m, char* key, char* value) {
         return music_setArtist(m, value);
     }
     if (strcmp(key, "duration") == 0) {
-        return music_setDuration(m, (unsigned short)atoi(value));
+        if (music_parseNonNegativeLong(value, &parsed) == ERROR || parsed == 0) {
+            return ERROR;
+        }
+        return music_setDuration(m, (unsigned short)parsed);
     }
     if (strcmp(key, "state") == 0) {
-        return music_setState(m, (State)atoi(value));
+        if (music_parseNonNegativeLong(value, &parsed) == ERROR) {
+            return ERROR;
+        }
+        return music_setState(m, (State)parsed);
     }
 
     return ERROR;
@@ -91,6 +127,7 @@ Music* music_init() {
 Music* music_initFromString(char* descr) {
     Music* m = NULL;
     char *buffer = NULL, *p = NULL, *key_start = NULL, *value_start = NULL;
+    Bool has_id = FALSE, has_title = FALSE, has_artist = FALSE, has_duration = FALSE;
 
     if (!descr) {
         return NULL;
@@ -144,10 +181,34 @@ Music* music_initFromString(char* descr) {
         *p = '\0';
         p++;
 
-        music_setField(m, key_start, value_start);
+        if (music_setField(m, key_start, value_start) == ERROR) {
+            music_free(m);
+            free(buffer);
+            return NULL;
+        }
+
+        if (strcmp(key_start, "id") == 0 || strcmp(key_start, "iid") == 0) {
+            has_id = TRUE;
+        } else if (strcmp(key_start, "title") == 0) {
+            has_title = TRUE;
+        } else if (strcmp(key_start, "artist") == 0) {
+            has_artist = TRUE;
+        } else if (strcmp(key_start, "duration") == 0) {
+            has_duration = TRUE;
+        }
+
+        while (isspace((unsigned char)*p)) {
+            p++;
+        }
     }
 
     free(buffer);
+
+    if (has_id == FALSE || has_title == FALSE || has_artist == FALSE || has_duration == FALSE) {
+        music_free(m);
+        return NULL;
+    }
+
     return m;
 }
 
@@ -253,7 +314,7 @@ int music_getIndex(const Music* m) {
  * @return OK on success, ERROR otherwise.
  */
 Status music_setId(Music* m, const long id) {
-    if (!m || id <0)return ERROR;
+    if (!m || id < 0) return ERROR;
 
     m->id = id;
     return OK;
@@ -315,7 +376,7 @@ Status music_setDuration(Music* m, const unsigned short duration) {
  * @return OK on success, ERROR otherwise.
  */
 Status music_setState(Music* m, const State state) {
-    if (!m) {
+    if (!m || (state != NOT_LISTENED && state != LISTENED)) {
         return ERROR;
     }
 
