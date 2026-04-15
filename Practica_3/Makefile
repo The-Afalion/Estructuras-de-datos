@@ -71,5 +71,14 @@ run_e2s: p3_e2s
 runv_e2s: p3_e2s
 	$(VALGRIND) ./p3_e2s radio_bfs.txt 1 2
 
+test_queue: test_queue.o queue.o
+    $(CC) $(CFLAGS) -o $@ test_queue.o queue.o
+
+run_test_queue: test_queue
+    ./test_queue
+
+runv_test_queue: test_queue
+    $(VALGRIND) ./test_queue
+
 clean:
 	rm -f *.o *.a $(TARGETS) $(QLIST_TARGETS)
