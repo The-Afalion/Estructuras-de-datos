@@ -1,3 +1,8 @@
+/**
+ * @file p3_e1.c
+ * @brief Exercise 1: Playback queue simulation.
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -78,9 +83,19 @@ static int music_queue_print(FILE *pf, const void *m) {
     return music_plain_print(pf, m);
 }
 
+/**
+ * @brief Interactive menu that simulates a music player.
+ *
+ * Pops the front song as "now playing", shows the remaining queue as
+ * "Upcoming", and lets the user advance or exit.
+ *
+ * @param q Playback queue.
+ *
+ * @return Last selected option.
+ */
 static int now_playing_menu(Queue *q) {
     char buffer[32];
-    int option;
+    int option = 0;
     Music *current = NULL;
 
     if (!q) {
@@ -88,15 +103,18 @@ static int now_playing_menu(Queue *q) {
     }
 
     do {
-        current = (Music *)queue_getFront(q);
-        if (current) {
+        if (queue_isEmpty(q) == FALSE) {
+            /* Pop the current song to display it */
+            current = (Music *)queue_pop(q);
             music_formatted_print(stdout, current);
+
+            /* Show remaining songs as upcoming */
+            printf("Upcoming:\n");
+            queue_print(stdout, q, music_queue_print);
         } else {
             printf("\nNo song currently playing.\n\n");
         }
 
-        printf("Playback queue:\n");
-        queue_print(stdout, q, music_queue_print);
         printf("\n1. Next song\n");
         printf("2. Exit\n");
         printf("Choose an option: ");
@@ -106,10 +124,10 @@ static int now_playing_menu(Queue *q) {
         }
 
         option = atoi(buffer);
-        if (option == 1 && queue_isEmpty(q) == FALSE) {
-            queue_pop(q);
-        }
-    } while (option != 2);
+
+        /* Option 1: loop naturally pops the next song.
+         * Option 2 or empty queue: exit. */
+    } while (option != 2 && queue_isEmpty(q) == FALSE);
 
     return option;
 }

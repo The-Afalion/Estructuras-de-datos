@@ -1,4 +1,5 @@
 #include "list.h"
+#include <stdlib.h>
 
 typedef struct _Node {
     const void *data;
@@ -6,217 +7,127 @@ typedef struct _Node {
 } Node;
 
 struct _List {
-    Node *front;
-    Node *rear;
+    Node *first;
+    Node *last;
     int size;
 };
 
-/**
- * @brief Allocates and initializes one list node.
- *
- * @param e Element to store by reference.
- *
- * @return Pointer to the created node, or NULL on error.
- */
 static Node *node_new(const void *e) {
-    Node *node = NULL;
-
-    if (!e) {
-        return NULL;
-    }
-
-    node = (Node *)malloc(sizeof(Node));
-    if (!node) {
-        return NULL;
-    }
-
-    node->data = e;
-    node->next = NULL;
-
-    return node;
+    Node *n;
+    if (!e) return NULL;
+    n = (Node *)malloc(sizeof(Node));
+    if (!n) return NULL;
+    n->data = e;
+    n->next = NULL;
+    return n;
 }
 
 List *list_new() {
-    List *pl = NULL;
-
-    pl = (List *)malloc(sizeof(List));
-    if (!pl) {
-        return NULL;
-    }
-
-    pl->front = NULL;
-    pl->rear = NULL;
+    List *pl = (List *)malloc(sizeof(List));
+    if (!pl) return NULL;
+    pl->first = NULL;
+    pl->last = NULL;
     pl->size = 0;
-
     return pl;
 }
 
 Bool list_isEmpty(const List *pl) {
-    if (!pl || pl->size == 0) {
-        return TRUE;
-    }
-
+    if (!pl || pl->size == 0) return TRUE;
     return FALSE;
 }
 
 Status list_pushFront(List *pl, const void *e) {
-    Node *node = NULL;
-
-    if (!pl || !e) {
-        return ERROR;
-    }
-
-    node = node_new(e);
-    if (!node) {
-        return ERROR;
-    }
-
-    node->next = pl->front;
-    pl->front = node;
-    if (!pl->rear) {
-        pl->rear = node;
-    }
+    Node *n;
+    if (!pl || !e) return ERROR;
+    n = node_new(e);
+    if (!n) return ERROR;
+    n->next = pl->first;
+    pl->first = n;
+    if (!pl->last) pl->last = n;
     pl->size++;
-
     return OK;
 }
 
 Status list_pushBack(List *pl, const void *e) {
-    Node *node = NULL;
-
-    if (!pl || !e) {
-        return ERROR;
-    }
-
-    node = node_new(e);
-    if (!node) {
-        return ERROR;
-    }
-
+    Node *n;
+    if (!pl || !e) return ERROR;
+    n = node_new(e);
+    if (!n) return ERROR;
     if (list_isEmpty(pl) == TRUE) {
-        pl->front = node;
-        pl->rear = node;
+        pl->first = n;
+        pl->last = n;
     } else {
-        pl->rear->next = node;
-        pl->rear = node;
+        pl->last->next = n;
+        pl->last = n;
     }
     pl->size++;
-
     return OK;
 }
 
 void *list_popFront(List *pl) {
-    Node *node = NULL;
-    void *data = NULL;
-
-    if (!pl || list_isEmpty(pl) == TRUE) {
-        return NULL;
-    }
-
-    node = pl->front;
-    data = (void *)node->data;
-    pl->front = node->next;
-    if (!pl->front) {
-        pl->rear = NULL;
-    }
+    Node *n; void *data;
+    if (!pl || list_isEmpty(pl) == TRUE) return NULL;
+    n = pl->first;
+    data = (void *)n->data;
+    pl->first = n->next;
+    if (!pl->first) pl->last = NULL;
     pl->size--;
-
-    free(node);
+    free(n);
     return data;
 }
 
 void *list_popBack(List *pl) {
-    Node *current = NULL;
-    void *data = NULL;
-
-    if (!pl || list_isEmpty(pl) == TRUE) {
-        return NULL;
-    }
-
-    if (pl->front == pl->rear) {
-        data = (void *)pl->rear->data;
-        free(pl->rear);
-        pl->front = NULL;
-        pl->rear = NULL;
+    Node *cur; void *data;
+    if (!pl || list_isEmpty(pl) == TRUE) return NULL;
+    if (pl->first == pl->last) {
+        data = (void *)pl->last->data;
+        free(pl->last);
+        pl->first = NULL;
+        pl->last = NULL;
         pl->size = 0;
         return data;
     }
-
-    current = pl->front;
-    while (current->next != pl->rear) {
-        current = current->next;
-    }
-
-    data = (void *)pl->rear->data;
-    free(pl->rear);
-    pl->rear = current;
-    pl->rear->next = NULL;
+    cur = pl->first;
+    while (cur->next != pl->last) cur = cur->next;
+    data = (void *)pl->last->data;
+    free(pl->last);
+    pl->last = cur;
+    pl->last->next = NULL;
     pl->size--;
-
     return data;
 }
 
 void *list_getFront(List *pl) {
-    if (!pl || list_isEmpty(pl) == TRUE) {
-        return NULL;
-    }
-
-    return (void *)pl->front->data;
+    if (!pl || list_isEmpty(pl) == TRUE) return NULL;
+    return (void *)pl->first->data;
 }
 
 void *list_getBack(List *pl) {
-    if (!pl || list_isEmpty(pl) == TRUE) {
-        return NULL;
-    }
-
-    return (void *)pl->rear->data;
+    if (!pl || list_isEmpty(pl) == TRUE) return NULL;
+    return (void *)pl->last->data;
 }
 
 void list_free(List *pl) {
-    if (!pl) {
-        return;
-    }
-
-    while (list_isEmpty(pl) == FALSE) {
-        list_popFront(pl);
-    }
-
+    if (!pl) return;
+    while (list_isEmpty(pl) == FALSE) list_popFront(pl);
     free(pl);
 }
 
 int list_size(const List *pl) {
-    if (!pl) {
-        return ERROR_I;
-    }
-
+    if (!pl) return ERROR_I;
     return pl->size;
 }
 
 int list_print(FILE *fp, const List *pl, p_list_ele_print f) {
-    Node *current = NULL;
-    int chars = 0;
-    int written = 0;
-
-    if (!fp || !pl || !f) {
-        return ERROR_I;
+    Node *cur; int chars = 0, w;
+    if (!fp || !pl || !f) return ERROR_I;
+    cur = pl->first;
+    while (cur) {
+        w = f(fp, cur->data);
+        if (w < 0) return w;
+        chars += w;
+        cur = cur->next;
+        if (cur) { w = fprintf(fp, "\n"); if (w < 0) return ERROR_I; chars += w; }
     }
-
-    current = pl->front;
-    while (current) {
-        written = f(fp, current->data);
-        if (written < 0) {
-            return written;
-        }
-        chars += written;
-        current = current->next;
-        if (current) {
-            written = fprintf(fp, "\n");
-            if (written < 0) {
-                return ERROR_I;
-            }
-            chars += written;
-        }
-    }
-
     return chars;
 }

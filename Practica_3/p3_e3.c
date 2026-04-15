@@ -1,3 +1,8 @@
+/**
+ * @file p3_e3.c
+ * @brief Exercise 3: Favorites list using the List TAD.
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -8,7 +13,9 @@
 #define ERROR_MAIN 1
 #define MIN_ARGC 2
 
-static int music_list_print(FILE *pf, const void *m);
+static int music_list_print(FILE *pf, const void *m) {
+    return music_plain_print(pf, m);
+}
 
 int main(int argc, char **argv) {
     FILE *fin = NULL;
@@ -55,6 +62,7 @@ int main(int argc, char **argv) {
         return ERROR_MAIN;
     }
 
+    /* Insert: odd indices (1st, 3rd, 5th …) go to back, even to front */
     for (i = 0; i < num_music; i++) {
         song = radio_getMusicAt(radio, i);
         if (!song) {
@@ -81,39 +89,49 @@ int main(int argc, char **argv) {
         }
     }
 
-    printf("Favorites list after insertion:\n");
+    /* Print the full list */
     list_print(stdout, favorites, music_list_print);
     printf("\n");
 
     half = num_music / 2;
 
-    printf("\nExtracting first half from front:\n");
+    /* Extract first half from front */
+    printf("\nFinished inserting. Now we extract from the beginning:\n");
     for (i = 0; i < half; i++) {
         song = (Music *)list_popFront(favorites);
-        if (!song || music_plain_print(stdout, song) < 0 || printf("\n") < 0) {
+        if (!song) {
             radio_free(radio);
             list_free(favorites);
             fprintf(stderr, "ERROR: Could not extract from the front of the list\n");
             return ERROR_MAIN;
         }
+        music_plain_print(stdout, song);
+        if (i < half - 1) {
+            printf(" ");
+        }
     }
+    printf("\n");
 
-    printf("\nExtracting second half from back:\n");
+    /* Extract second half from back */
+    printf("\nNow we extract from the end:\n");
+    i = 0;
     while (list_isEmpty(favorites) == FALSE) {
         song = (Music *)list_popBack(favorites);
-        if (!song || music_plain_print(stdout, song) < 0 || printf("\n") < 0) {
+        if (!song) {
             radio_free(radio);
             list_free(favorites);
             fprintf(stderr, "ERROR: Could not extract from the back of the list\n");
             return ERROR_MAIN;
         }
+        if (i > 0) {
+            printf(" ");
+        }
+        music_plain_print(stdout, song);
+        i++;
     }
+    printf("\n");
 
     list_free(favorites);
     radio_free(radio);
     return 0;
-}
-
-static int music_list_print(FILE *pf, const void *m) {
-    return music_plain_print(pf, m);
 }

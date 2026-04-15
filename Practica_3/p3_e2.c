@@ -1,3 +1,8 @@
+/**
+ * @file p3_e2.c
+ * @brief Exercise 2: BFS vs DFS musical exploration.
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -43,20 +48,25 @@ int main(int argc, char **argv) {
     printf("Radio:\n");
     radio_print(stdout, radio);
 
-    printf("\nFrom music with id: %ld\n", from_id);
-    printf("To music with id: %ld\n", to_id);
-
-    printf("\nBFS exploration path:\n");
-    if (radio_breadthSearch(radio, from_id, to_id) == ERROR) {
-        radio_free(radio);
-        fprintf(stderr, "ERROR: BFS could not reach the destination\n");
-        return ERROR_MAIN;
-    }
-
-    printf("\nDFS exploration path:\n");
+    /* DFS */
+    printf("\n--------DFS------------\n");
+    printf("From music id: %ld\n", from_id);
+    printf("To music id: %ld\n", to_id);
+    printf("Output:\n");
     if (radio_depthSearch(radio, from_id, to_id) == ERROR) {
         radio_free(radio);
         fprintf(stderr, "ERROR: DFS could not reach the destination\n");
+        return ERROR_MAIN;
+    }
+
+    /* BFS */
+    printf("\n--------BFS------------\n");
+    printf("From music id: %ld\n", from_id);
+    printf("To music id: %ld\n", to_id);
+    printf("Output:\n");
+    if (radio_breadthSearch(radio, from_id, to_id) == ERROR) {
+        radio_free(radio);
+        fprintf(stderr, "ERROR: BFS could not reach the destination\n");
         return ERROR_MAIN;
     }
 

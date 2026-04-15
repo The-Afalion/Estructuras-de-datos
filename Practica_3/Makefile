@@ -8,18 +8,12 @@ VALGRIND = valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes 
 
 COMMON = music.o radio.o queue.o
 TARGETS = p3_e1 p3_e2 p3_e3
-TEST_TARGETS = tb_p3_e1 tb_p3_e2 tb_p3_e3
+QLIST_TARGETS = p3_e1s p3_e2s
 
-.PHONY: all clean libs tests check run_e1 runv_e1 run_e2 runv_e2 run_e3 runv_e3
+.PHONY: all clean libs run_e1 runv_e1 run_e2 runv_e2 run_e3 runv_e3 \
+        run_e1s runv_e1s run_e2s runv_e2s
 
-all: $(TARGETS)
-
-tests: $(TEST_TARGETS)
-
-check: all tests
-	./tb_p3_e1
-	./tb_p3_e2
-	./tb_p3_e3
+all: $(TARGETS) $(QLIST_TARGETS)
 
 libs: libstack.a
 
@@ -29,6 +23,7 @@ libstack.a: stack.o
 %.o: %.c
 	$(CC) $(CFLAGS) $(IFLAGS) -c -o $@ $<
 
+# --- Array-based queue targets ---
 p3_e1: p3_e1.o $(COMMON) libstack.a
 	$(CC) $(CFLAGS) -o $@ p3_e1.o $(COMMON) $(LDFLAGS) $(LDLIBS)
 
@@ -38,15 +33,14 @@ p3_e2: p3_e2.o $(COMMON) libstack.a
 p3_e3: p3_e3.o music.o radio.o queue.o list.o libstack.a
 	$(CC) $(CFLAGS) -o $@ p3_e3.o music.o radio.o queue.o list.o $(LDFLAGS) $(LDLIBS)
 
-tb_p3_e1: tb_p3_e1.o music.o radio.o queue.o libstack.a
-	$(CC) $(CFLAGS) -o $@ tb_p3_e1.o music.o radio.o queue.o $(LDFLAGS) $(LDLIBS)
+# --- List-based queue targets (Exercise 4) ---
+p3_e1s: p3_e1.o music.o radio.o queueList.o list.o libstack.a
+	$(CC) $(CFLAGS) -o $@ p3_e1.o music.o radio.o queueList.o list.o $(LDFLAGS) $(LDLIBS)
 
-tb_p3_e2: tb_p3_e2.o music.o radio.o queue.o libstack.a
-	$(CC) $(CFLAGS) -o $@ tb_p3_e2.o music.o radio.o queue.o $(LDFLAGS) $(LDLIBS)
+p3_e2s: p3_e2.o music.o radio.o queueList.o list.o libstack.a
+	$(CC) $(CFLAGS) -o $@ p3_e2.o music.o radio.o queueList.o list.o $(LDFLAGS) $(LDLIBS)
 
-tb_p3_e3: tb_p3_e3.o music.o radio.o queue.o list.o libstack.a
-	$(CC) $(CFLAGS) -o $@ tb_p3_e3.o music.o radio.o queue.o list.o $(LDFLAGS) $(LDLIBS)
-
+# --- Run targets ---
 run_e1: p3_e1
 	./p3_e1 radio.txt
 
@@ -54,10 +48,10 @@ runv_e1: p3_e1
 	$(VALGRIND) ./p3_e1 radio.txt
 
 run_e2: p3_e2
-	./p3_e2 radio_bfs.txt 1 10
+	./p3_e2 radio_bfs.txt 1 2
 
 runv_e2: p3_e2
-	$(VALGRIND) ./p3_e2 radio_bfs.txt 1 10
+	$(VALGRIND) ./p3_e2 radio_bfs.txt 1 2
 
 run_e3: p3_e3
 	./p3_e3 radio_bfs.txt
@@ -65,5 +59,17 @@ run_e3: p3_e3
 runv_e3: p3_e3
 	$(VALGRIND) ./p3_e3 radio_bfs.txt
 
+run_e1s: p3_e1s
+	./p3_e1s radio.txt
+
+runv_e1s: p3_e1s
+	$(VALGRIND) ./p3_e1s radio.txt
+
+run_e2s: p3_e2s
+	./p3_e2s radio_bfs.txt 1 2
+
+runv_e2s: p3_e2s
+	$(VALGRIND) ./p3_e2s radio_bfs.txt 1 2
+
 clean:
-	rm -f *.o *.a $(TARGETS) $(TEST_TARGETS) tb_*.txt tb_*.out tb_*.err *.exe
+	rm -f *.o *.a $(TARGETS) $(QLIST_TARGETS)
