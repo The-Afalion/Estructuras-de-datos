@@ -15,10 +15,10 @@ A lo largo del desarrollo, nos hemos enfocado en:
 ---
 ##  Directorios y Targets de cada uno
 
-###  Practica 3:
-*   **objtivos** 
-*   Aprender un diseño e implementación del TAD Cola (Queue).
-*   Comprender y aplicar el comportamiento FIFO.
-*   Comprender el uso y diferencias de los algoritmos de exploración (DFS y BFS).
-*   Aprender a diseñar e implementar el TAD Lista (List).
-*   Integrar las nuevas estructuras de datos con los TAD Music y Radio ya implementados.
+###  Practica 3: **objtivos**
+
+*   Aprender un diseño e **implementación del TAD Cola** *(Queue)*.
+*   Comprender y **aplicar** el **comportamiento FIFO**.
+*   Comprender el **uso y diferencias** de los **algoritmos de exploración **(DFS y BFS)**.
+*   Aprender a diseñar e **implementar el TAD Lista** *(List)*.
+*   **Integrar** las nuevas estructuras de datos **con los TAD Music y Radio** ya implementados.
