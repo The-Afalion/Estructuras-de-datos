@@ -7,7 +7,9 @@
 #include <stdio.h>
 #include "queue.h"
 
+#ifndef MAX_QUEUE
 #define MAX_QUEUE 4096
+#endif
 
 struct _Queue {
     void *data[MAX_QUEUE];
