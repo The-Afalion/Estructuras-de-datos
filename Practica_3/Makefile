@@ -7,11 +7,12 @@ LDLIBS = -lstack
 VALGRIND = valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes -s
 
 COMMON = music.o radio.o queue.o
-TARGETS = p3_e1 p3_e2 p3_e3
+TARGETS = p3_e1 p3_e2 p3_e3 test_queue
 QLIST_TARGETS = p3_e1s p3_e2s
 
 .PHONY: all clean libs run_e1 runv_e1 run_e2 runv_e2 run_e3 runv_e3 \
-        run_e1s runv_e1s run_e2s runv_e2s
+        run_e1s runv_e1s run_e2s runv_e2s \
+        run_test_queue runv_test_queue
 
 all: $(TARGETS) $(QLIST_TARGETS)
 
@@ -39,6 +40,13 @@ p3_e1s: p3_e1.o music.o radio.o queueList.o list.o libstack.a
 
 p3_e2s: p3_e2.o music.o radio.o queueList.o list.o libstack.a
 	$(CC) $(CFLAGS) -o $@ p3_e2.o music.o radio.o queueList.o list.o $(LDFLAGS) $(LDLIBS)
+
+# --- Test queue (compiled with MAX_QUEUE=8 to exercise capacity and wrap-around) ---
+queue_test.o: queue.c
+	$(CC) $(CFLAGS) $(IFLAGS) -DMAX_QUEUE=8 -c -o $@ queue.c
+
+test_queue: test_queue.o queue_test.o
+	$(CC) $(CFLAGS) -o $@ test_queue.o queue_test.o
 
 # --- Run targets ---
 run_e1: p3_e1
@@ -71,14 +79,11 @@ run_e2s: p3_e2s
 runv_e2s: p3_e2s
 	$(VALGRIND) ./p3_e2s radio_bfs.txt 1 2
 
-test_queue: test_queue.o queue.o
-    $(CC) $(CFLAGS) -o $@ test_queue.o queue.o
-
 run_test_queue: test_queue
-    ./test_queue
+	./test_queue
 
 runv_test_queue: test_queue
-    $(VALGRIND) ./test_queue
+	$(VALGRIND) ./test_queue
 
 clean:
 	rm -f *.o *.a $(TARGETS) $(QLIST_TARGETS)
