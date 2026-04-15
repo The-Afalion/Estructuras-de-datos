@@ -1,1 +1,0 @@
-Usage: .\p3_e3.exe <radio.txt>

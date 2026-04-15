@@ -1,6 +1,0 @@
-Favorites list after insertion:
-
-
-Extracting first half from front:
-
-Extracting second half from back:

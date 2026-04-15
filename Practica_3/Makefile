@@ -66,4 +66,4 @@ runv_e3: p3_e3
 	$(VALGRIND) ./p3_e3 radio_bfs.txt
 
 clean:
-	rm -f *.o *.a $(TARGETS) $(TEST_TARGETS) tb_*.txt tb_*.out tb_*.err
+	rm -f *.o *.a $(TARGETS) $(TEST_TARGETS) tb_*.txt tb_*.out tb_*.err *.exe

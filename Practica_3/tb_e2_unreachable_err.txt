@@ -1,1 +1,0 @@
-ERROR: BFS could not reach the destination
