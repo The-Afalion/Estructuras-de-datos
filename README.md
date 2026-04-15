@@ -1,9 +1,15 @@
-#Estructura de Datos Practica **(Rodrigo & Rafael)**
+# Prácticas de Estructuras de Datos
 
-Este repositorio compila los proyectos prácticos desarrollados para la asignatura de **Estructuras de Datos**. El eje central del curso es el desarrollo de un **Reproductor de Música por Consola**, un proyecto evolutivo donde aplicamos conceptos teóricos para:
+### 👥 Integrantes: **Rodrigo & Rafael**
 
-    **Abstraer** fragmentos de código mediante estructuras lógicas.
+Este repositorio compila los proyectos prácticos desarrollados para la asignatura de **Estructuras de Datos**. El eje central del curso es el desarrollo de un **Reproductor de Música por Consola**, un proyecto evolutivo donde aplicamos conceptos teóricos de forma incremental.
 
-    **Optimizar** procesos y gestión de memoria.
+## 🚀 Objetivos del Proyecto
 
-    **Implementar** algoritmos eficientes que aprovechan dichas abstracciones para mejorar el rendimiento del sistema.
+A lo largo del desarrollo, nos hemos enfocado en:
+
+* **Abstraer** fragmentos de código mediante estructuras lógicas.
+* **Optimizar** procesos y la gestión de memoria.
+* **Implementar** algoritmos eficientes que aprovechan dichas abstracciones para mejorar el rendimiento del sistema.
+
+---
