@@ -14,39 +14,6 @@ int mainCleanUp (int ret_value, Radio *r, FILE *pf) {
   exit(ret_value);
 }
 
-void loadBalancedTree_rec(Music **sorted_data, BSTree *t, int first, int last) {
-  int middle = (first + last) / 2;
-  Music *m;
-
-  if (first <= last) {
-    m = sorted_data[middle];
-    if (tree_insert(t, m) == ERROR) {
-      fprintf(stdout, "Music ");
-      music_plain_print(stdout, m);
-      fprintf(stdout, " not inserted!\n");
-    }
-
-    loadBalancedTree_rec(sorted_data, t, first, middle - 1);
-    loadBalancedTree_rec(sorted_data, t, middle + 1, last);
-  }
-}
-
-BSTree *loadBalancedTree(Music **data, int n) {
-  BSTree *t;
-
-  if (!data || (n <= 0)) {
-    return NULL;
-  }
-
-  if (!(t = tree_init(music_plain_print, music_cmp))) { 
-    return NULL;
-  }
-
-  loadBalancedTree_rec(data, t, 0, n - 1);
-
-  return t;
-}
-
 BSTree *loadUnbalancedTree(Music **data, int n) {
   BSTree *t;
   Music *m;
@@ -113,7 +80,7 @@ int main(int argc, char const *argv[]) {
     r = radio_init();
     if (!r) mainCleanUp (EXIT_FAILURE, r, f_in);
     
-    // Reads the file
+    /* Reads the file */
     if  (radio_readFromFile(f_in, r) == ERROR) {
       fprintf(stdout, "Not file or File format incorrect\n");
       mainCleanUp (EXIT_FAILURE, r, f_in);
@@ -151,7 +118,7 @@ int main(int argc, char const *argv[]) {
 		qsort(songs, n, sizeof(Music *), qsort_fun);
 		fprintf(f_out, "Mode: sorted\n");
 		elapsed = clock();
-		t = loadBalancedTree(songs, n);
+		t = loadUnbalancedTree(songs, n);
 		elapsed = clock() - elapsed;
 	}
 
@@ -191,10 +158,10 @@ int main(int argc, char const *argv[]) {
   mainCleanUp (EXIT_SUCCESS, r, f_in);
 }
 /*
-P1: In normal mode, the elements are first inserted in the order in which they appear in the file.
-*If that order looks a lot like the total order, the BST can be very unbalanced, almost like a list,
-*increasing its depth. That is why the Insertion and search operations take longer. In sorted mode,
-*the elements are first ordered and then the tree is built recursively inserting the central element of each subarray.
-*This is how you get a much more balanced tree, with less depth, and therefore the Construction and search operations are usually faster.
-*The property of the tree that explains this behavior is its depth or, equivalently, its degree of roll.
+P1: In normal mode, the songs are inserted in the same order as in the input file.
+*In sorted mode, the songs are first ordered with qsort and then inserted in that order.
+*Since the tree is a regular BST and it is not self-balancing,
+*inserting already ordered data can create a very unbalanced tree, almost like a linked list.
+*This increases the tree depth, and min, max, contains and insert depend on that depth.
+*Therefore the property that explains the differences in time is the depth or height of the tree.
 */

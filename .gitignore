@@ -1,3 +1,7 @@
 *.vs*
 *.o
 *.exe
+.idea/
+build/
+Practica_4/p4_e1
+Practica_4/p4_e3

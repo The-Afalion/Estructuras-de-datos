@@ -94,8 +94,8 @@ int main(int argc, char const *argv[]) {
 }
 
 /*
-P3: No. The tree is ordered by the comparison function of Music, which in this
-case sorts mainly by id, not by duration. Since duration is unrelated to the
-tree order, a node does not let us discard an entire left or right subtree just
-from its duration, so the traversal must visit all nodes in the worst case.
+P3: No. The tree is ordered by the comparison function of Music, which sorts songs by id, not by duration.
+Since duration is unrelated to tree order,
+a node does not let us discard an entire left or right subtree just from its duration,
+so the traversal must visit all nodes in the worst case.
 */
