@@ -1,25 +1,43 @@
-CC = gcc
-CFLAGS = -g -Wall -Wextra -pedantic -std=c99
-IFLAGS = -I.
+PRACTICE = Practica_4
 
-TARGET = p4_e1
-OBJS = p4_e1.o bstree.o radio.o music.o stack.o queue.o list.o
+.PHONY: all clean p4 clean-p4 run-p4 run_e1_normal run_e1_sorted \
+        run_e1_100_normal run_e1_100_sorted run_e1_1k_normal \
+        run_e1_1k_sorted run_e1_all run_e3
 
-.PHONY: all clean run_e1_normal run_e1_sorted
+all: p4
 
-all: $(TARGET)
-
-%.o: %.c
-	$(CC) $(CFLAGS) $(IFLAGS) -c -o $@ $<
-
-$(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) -o $@ $(OBJS)
-
-run_e1_normal: $(TARGET)
-	./$(TARGET) data_music_10.txt 8 normal
-
-run_e1_sorted: $(TARGET)
-	./$(TARGET) data_music_10.txt 8 sorted
+p4:
+	$(MAKE) -C $(PRACTICE)
 
 clean:
-	rm -f *.o $(TARGET)
+	$(MAKE) -C $(PRACTICE) clean
+
+clean-p4:
+	$(MAKE) -C $(PRACTICE) clean
+
+run-p4:
+	$(MAKE) -C $(PRACTICE) run_e1_all
+
+run_e1_normal:
+	$(MAKE) -C $(PRACTICE) run_e1_normal
+
+run_e1_sorted:
+	$(MAKE) -C $(PRACTICE) run_e1_sorted
+
+run_e1_100_normal:
+	$(MAKE) -C $(PRACTICE) run_e1_100_normal
+
+run_e1_100_sorted:
+	$(MAKE) -C $(PRACTICE) run_e1_100_sorted
+
+run_e1_1k_normal:
+	$(MAKE) -C $(PRACTICE) run_e1_1k_normal
+
+run_e1_1k_sorted:
+	$(MAKE) -C $(PRACTICE) run_e1_1k_sorted
+
+run_e1_all:
+	$(MAKE) -C $(PRACTICE) run_e1_all
+
+run_e3:
+	$(MAKE) -C $(PRACTICE) run_e3

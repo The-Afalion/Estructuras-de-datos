@@ -133,10 +133,11 @@ Music* music_initFromString(char* descr) {
         return NULL;
     }
 
-    buffer = strdup(descr);
+    buffer = malloc(strlen(descr) + 1);
     if (!buffer) {
         return NULL;
     }
+    strcpy(buffer, descr);
 
     m = music_init();
     if (!m) {
