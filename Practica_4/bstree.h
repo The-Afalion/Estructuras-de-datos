@@ -5,15 +5,15 @@
 #include "list.h"
 #include "types.h"
 
-/**
- * BSTree type definition: a binary search of arbitrary elements.
- */
 typedef struct _BSTree BSTree;
 
-/**
- * @brief Public function that creates a new BSTree.
+typedef int (*P_ele_print)(FILE *, const void *);
+typedef int (*P_ele_cmp)(const void *, const void *);
+
+/*
+ * @brief Public function that creates new BSTree.
  *
- * Allocates memory for the new Tree. When creating a Tree it is necessary to
+ * Allocates memory for the new Tree. When creates a Tree it need to
  * specify the pointers to functions that:
  * - Print a Tree element.
  * - Compare two elements.
@@ -21,14 +21,14 @@ typedef struct _BSTree BSTree;
  * @param print_ele Pointer to the function that prints a Tree element.
  * @param cmp_ele Pointer to the function that compares two Tree elements
  *
- * @return Returns the address of the new Tree, or NULL in case of error.
+ * @return Returns the address of the new Tree, or NULL if error.
  */
 BSTree *tree_init(P_ele_print print_ele, P_ele_cmp cmp_ele);
 
 /**
  * @brief Public function that frees a Tree.
  *
- * Frees all the memory allocated for the Tree.
+ * Free all memory allocated for the Tree.
  *
  * @param tree Pointer to the Tree.
  */
@@ -39,7 +39,7 @@ void tree_destroy(BSTree *tree);
  *
  * Note that the return value is TRUE for a NULL Tree.
  *
- * @param tree Pointer to the Tree.
+ * @param tree Pointer to Tree.
  *
  * @return Bool value TRUE if the Tree is empty or NULL, Bool value FALSE
  * otherwise.
