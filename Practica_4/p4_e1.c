@@ -58,6 +58,48 @@ BSTree *loadUnbalancedTree(Music **data, int n) {
   return t;
 }
 
+Status loadBalancedTreeRec(BSTree *t, Music **data, int first, int last) {
+  int mid;
+
+  if (!t || !data) {
+    return ERROR;
+  }
+
+  if (first > last) {
+    return OK;
+  }
+
+  mid = (first + last) / 2;
+  if (tree_insert(t, data[mid]) == ERROR) {
+    return ERROR;
+  }
+
+  if (loadBalancedTreeRec(t, data, first, mid - 1) == ERROR) {
+    return ERROR;
+  }
+
+  return loadBalancedTreeRec(t, data, mid + 1, last);
+}
+
+BSTree *loadBalancedTree(Music **data, int n) {
+  BSTree *t;
+
+  if (!data || (n <= 0)) {
+    return NULL;
+  }
+
+  if (!(t = tree_init(music_plain_print, music_cmp))) {
+    return NULL;
+  }
+
+  if (loadBalancedTreeRec(t, data, 0, n - 1) == ERROR) {
+    tree_destroy(t);
+    return NULL;
+  }
+
+  return t;
+}
+
 int qsort_fun(const void *e1, const void *e2){
   Music **pm1, **pm2;
 
@@ -140,7 +182,7 @@ int main(int argc, char const *argv[]) {
 		qsort(songs, n, sizeof(Music *), qsort_fun);
 		fprintf(f_out, "Mode: sorted\n");
 		elapsed = clock();
-		t = loadUnbalancedTree(songs, n);
+		t = loadBalancedTree(songs, n);
 		elapsed = clock() - elapsed;
 	}
 
@@ -176,7 +218,7 @@ int main(int argc, char const *argv[]) {
     fprintf(f_out, " - %ld ticks (%f seconds)\n", (long)elapsed, ((float) elapsed) / CLOCKS_PER_SEC);
   }
 
-  /* Exercise 2: tree_remove */
+
   elapsed = clock();
   if (tree_remove(t, m) == OK) {
     elapsed = clock() - elapsed;
@@ -196,9 +238,11 @@ int main(int argc, char const *argv[]) {
 }
 /*
 P1: In normal mode, the songs are inserted in the same order as in the input file.
-*In sorted mode, the songs are first ordered with qsort and then inserted in that order.
-*Since the tree is a regular BST and it is not self-balancing,
-*inserting already ordered data can create a very unbalanced tree, almost like a linked list.
-*This increases the tree depth, and min, max, contains and insert depend on that depth.
-*Therefore the property that explains the differences in time is the depth or height of the tree.
+*In sorted mode, the songs are first ordered with qsort and then inserted by
+*choosing the middle element of each sorted subarray.
+*The sorted mode inserts the middle element of each sorted subarray first, so the
+*resulting tree is more balanced than the one built from the file order.
+*This reduces the tree depth, and min, max, contains and insert depend on that
+*depth. Therefore the property that explains the differences in time is the
+*depth or height of the tree.
 */
