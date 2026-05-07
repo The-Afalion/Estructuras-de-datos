@@ -8,10 +8,29 @@
 #include "types.h"
 
 /* START Private methods */
-int mainCleanUp (int ret_value, Radio *r, FILE *pf) {
+void mainCleanUp (int ret_value, Radio *r, FILE *pf) {
   radio_free(r);   
-  fclose(pf);
+  if (pf) {
+    fclose(pf);
+  }
   exit(ret_value);
+}
+
+Status parseNonNegativeLong(const char *text, long *out) {
+  char *end = NULL;
+  long value;
+
+  if (!text || !out || text[0] == '\0') {
+    return ERROR;
+  }
+
+  value = strtol(text, &end, 10);
+  if (*end != '\0' || value < 0) {
+    return ERROR;
+  }
+
+  *out = value;
+  return OK;
 }
 
 BSTree *loadUnbalancedTree(Music **data, int n) {
@@ -86,7 +105,10 @@ int main(int argc, char const *argv[]) {
       mainCleanUp (EXIT_FAILURE, r, f_in);
     }
 	
-	music_id = atoi(argv[2]);
+	if (parseNonNegativeLong(argv[2], &music_id) == ERROR) {
+		printf("Invalid music id: %s\n", argv[2]);
+		mainCleanUp(EXIT_FAILURE, r, f_in);
+	}
 	n = radio_getNumberOfMusic(r);
 	if (n <= 0) {
 		mainCleanUp(EXIT_FAILURE, r, f_in);
@@ -123,11 +145,12 @@ int main(int argc, char const *argv[]) {
 	}
 
   if (!t) {
+    free(songs);
     mainCleanUp (EXIT_FAILURE, r, f_in);
   }
 
   fprintf(f_out, "Tree building time: %ld ticks (%f seconds)\n", (long)elapsed, ((float) elapsed) / CLOCKS_PER_SEC);
-  fprintf(f_out, "Tree size: %zu\nTree depth: %d\n", tree_size(t), tree_depth(t));
+  fprintf(f_out, "Tree size: %lu\nTree depth: %d\n", (unsigned long)tree_size(t), tree_depth(t));
 
   fprintf(f_out, "Min element in tree: ");
   elapsed = clock();
@@ -164,11 +187,12 @@ int main(int argc, char const *argv[]) {
     fprintf(f_out, "Removing element in tree: ERROR - %ld ticks (%f seconds)\n",
             (long)elapsed, ((float) elapsed) / CLOCKS_PER_SEC);
   }
-  fprintf(f_out, "Tree size: %zu\nTree depth: %d\n", tree_size(t), tree_depth(t));
+  fprintf(f_out, "Tree size: %lu\nTree depth: %d\n", (unsigned long)tree_size(t), tree_depth(t));
 
   tree_destroy(t);
   free(songs);
   mainCleanUp (EXIT_SUCCESS, r, f_in);
+  return EXIT_SUCCESS;
 }
 /*
 P1: In normal mode, the songs are inserted in the same order as in the input file.

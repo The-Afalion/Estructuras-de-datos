@@ -381,7 +381,7 @@ Status radio_readFromFile(FILE *fin, Radio *r) {
   if (!fin || !r) {
     return ERROR;
   }
-  //Init; nu music first line in file .txt
+  /* Init; nu music first line in file .txt */
   if (fscanf(fin, "%d\n", &num_songs) != 1 || num_songs < 0 || num_songs > MAX_MSC) {
     return ERROR;
   }

@@ -11,7 +11,6 @@
 #include "types.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 
 /**
  * List type definition: a list of arbitrary elements.

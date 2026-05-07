@@ -1,10 +1,28 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <limits.h>
 
 #include "bstree.h"
 #include "music.h"
 #include "radio.h"
 #include "types.h"
+
+static Status parseNonNegativeLong(const char *text, long *out) {
+  char *end = NULL;
+  long value;
+
+  if (!text || !out || text[0] == '\0') {
+    return ERROR;
+  }
+
+  value = strtol(text, &end, 10);
+  if (*end != '\0' || value < 0) {
+    return ERROR;
+  }
+
+  *out = value;
+  return OK;
+}
 
 static void mainCleanUp(int ret_value, BSTree *tree, Radio *radio, FILE *pf) {
   tree_destroy(tree);
@@ -49,6 +67,7 @@ int main(int argc, char const *argv[]) {
   FILE *f_in = NULL;
   BSTree *tree = NULL;
   Radio *radio = NULL;
+  long min_duration_arg;
   int min_duration, count;
 
   if (argc != 3) {
@@ -56,11 +75,12 @@ int main(int argc, char const *argv[]) {
     return EXIT_FAILURE;
   }
 
-  min_duration = atoi(argv[2]);
-  if (min_duration < 0) {
+  if (parseNonNegativeLong(argv[2], &min_duration_arg) == ERROR ||
+      min_duration_arg > INT_MAX) {
     fprintf(stdout, "Invalid min_duration: %s\n", argv[2]);
     return EXIT_FAILURE;
   }
+  min_duration = (int)min_duration_arg;
 
   f_in = fopen(argv[1], "r");
   if (!f_in) {

@@ -22,6 +22,23 @@
 #define ERROR_MAIN 1
 #define MIN_ARGC 4
 
+static Status parseNonNegativeLong(const char *text, long *out) {
+  char *end = NULL;
+  long value;
+
+  if (!text || !out || text[0] == '\0') {
+    return ERROR;
+  }
+
+  value = strtol(text, &end, 10);
+  if (*end != '\0' || value < 0) {
+    return ERROR;
+  }
+
+  *out = value;
+  return OK;
+}
+
 /**
  * @brief Frees every owned resource and exits with the given code.
  */
@@ -116,10 +133,9 @@ int main(int argc, char const *argv[]) {
     return ERROR_MAIN;
   }
 
-  min_id = atol(argv[2]);
-  max_id = atol(argv[3]);
-  if (min_id < 0 || max_id < 0) {
-    fprintf(stderr, "Invalid id range: [%ld, %ld]\n", min_id, max_id);
+  if (parseNonNegativeLong(argv[2], &min_id) == ERROR ||
+      parseNonNegativeLong(argv[3], &max_id) == ERROR) {
+    fprintf(stderr, "Invalid id range: [%s, %s]\n", argv[2], argv[3]);
     return ERROR_MAIN;
   }
 

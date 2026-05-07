@@ -12,7 +12,7 @@
 #-----------------------------------------------------------------------------
 
 CC       = gcc
-CFLAGS   = -g -Wall -Wextra -pedantic -std=c99
+CFLAGS   = -g -Wall -Wextra -pedantic -std=c90
 IFLAGS   = -I.
 LDLIBS   =
 VALGRIND = valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes -s
@@ -106,17 +106,4 @@ runv_e3: p4_e3
 #-----------------------------------------------------------------------------
 
 clean:
-	rm -f *.o $(TARGETS)
-
-
-#Rodrigo, te he dejado unos comentarios en tree_rangeSearch para poder implementarla
-#recuerda quitar mis comentarios, o los que consideres traducelos que la última vez creo que pasamos unas
-#de mis maravillosas burra-eishons  XD.  Y pensando en lo que discutimos el jueves, parece que tenías razón
-#tree_rangeSearch acepta que si el mínimo es mayor al máximo se devuelve una lista vacía.
-#Por cierto, por favor, recuerdame el domingo terminar de implementar  remove  porque con cálculo y 
-#las clases con mis alumnos estoy seguro de que lo olvidaré.
-#Si encuentras algún error en el makefile,  o te llega a echar broma, no dudes en decirme a ver que puedo hacer.
-
-#Creo que está bastante entendible y no tan criptico como los suelo ahcer jajaja  pero si no ves algo, avísame
-#Otra cosa, todo comentario que veas por ahí medio util que hay dejado en español, please al english jsjs creo haberlo puesto
-#en inlgés todo lo que ví interesante para recordar cosas imporatntes, pero vamos, hay que echar un mejor ojo
+	rm -f *.o $(TARGETS) $(TARGETS:%=%.exe)
