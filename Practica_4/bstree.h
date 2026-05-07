@@ -181,6 +181,22 @@ Status tree_insert(BSTree *tree, const void *elem);
 Status tree_remove(BSTree *tree, const void *elem);
 
 /* NUEVAS */
+/**
+ * @brief Public function that returns a list with every element of the BST
+ * whose info is in the closed interval [min, max].
+ *
+ * The list is built by an in-order traversal with smart pruning, so the
+ * elements are returned sorted according to the comparison function of the
+ * tree. The list does NOT own the data: it stores pointers to the very same
+ * Music objects already stored in the tree, so the caller must not free
+ * the elements through list_free, but only the list itself.
+ *
+ * @param tree Pointer to the tree.
+ * @param min Pointer to the lower bound element.
+ * @param max Pointer to the upper bound element.
+ *
+ * @return Pointer to the new list (possibly empty), or NULL on error.
+ */
 List *tree_rangeSearch(const BSTree *tree, void *min, void *max);
 int tree_countLongSongs(const BSTree *tree, int min_duration);
 

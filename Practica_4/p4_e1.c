@@ -152,7 +152,20 @@ int main(int argc, char const *argv[]) {
     elapsed = clock() - elapsed;
     fprintf(f_out, " - %ld ticks (%f seconds)\n", (long)elapsed, ((float) elapsed) / CLOCKS_PER_SEC);
   }
-  
+
+  /* Exercise 2: tree_remove */
+  elapsed = clock();
+  if (tree_remove(t, m) == OK) {
+    elapsed = clock() - elapsed;
+    fprintf(f_out, "Removing element in tree: OK - %ld ticks (%f seconds)\n",
+            (long)elapsed, ((float) elapsed) / CLOCKS_PER_SEC);
+  } else {
+    elapsed = clock() - elapsed;
+    fprintf(f_out, "Removing element in tree: ERROR - %ld ticks (%f seconds)\n",
+            (long)elapsed, ((float) elapsed) / CLOCKS_PER_SEC);
+  }
+  fprintf(f_out, "Tree size: %zu\nTree depth: %d\n", tree_size(t), tree_depth(t));
+
   tree_destroy(t);
   free(songs);
   mainCleanUp (EXIT_SUCCESS, r, f_in);

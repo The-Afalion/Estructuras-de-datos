@@ -27,6 +27,7 @@ void *_bst_find_min_rec(BSTNode *pn);
 void *_bst_find_max_rec(BSTNode *pn);
 Bool _bst_contains_rec(BSTNode *pn, const void *elem, P_ele_cmp cmp_ele);
 Status _bst_insert_rec(BSTNode **pn, const void *elem, P_ele_cmp cmp_ele);
+BSTNode *_bst_remove_rec(BSTNode *pn, const void *elem, P_ele_cmp cmp_elem);
 BSTNode *_bst_node_new() {
   BSTNode *pn = NULL;
 
@@ -224,6 +225,117 @@ int _tree_countLongSongs_rec(BSTNode *node, int min_duration) {
   return count;
 }
 
+/**
+ * @brief Recursive private function that removes an element from the BST.
+ *
+ * Implements the algorithm described in the practice statement:
+ *   - If the current node is NULL, the element is not in the tree.
+ *   - If elem is smaller than the current info, recurse on the left subtree.
+ *   - If elem is greater than the current info, recurse on the right subtree.
+ *   - If elem matches the current info, remove the node attending to the
+ *     number of children:
+ *       * No children: free the node and return NULL.
+ *       * Only right child: keep the right child and free the node.
+ *       * Only left child: keep the left child and free the node.
+ *       * Two children: copy the smallest info of the right subtree into
+ *         the current node and recursively remove that smallest info from
+ *         the right subtree.
+ *
+ * @param pn Pointer to the current tree node.
+ * @param elem Pointer to the element to remove.
+ * @param cmp_elem Pointer to the comparison function.
+ *
+ * @return Pointer to the node that remains in the current position
+ * (NULL when the node has been removed and had no replacement).
+ */
+BSTNode *_bst_remove_rec(BSTNode *pn, const void *elem, P_ele_cmp cmp_elem) {
+  BSTNode *ret_node = NULL;
+  void *aux_info = NULL;
+  int cmp;
+
+  if (!pn || !elem || !cmp_elem) {
+    return pn;
+  }
+
+  cmp = cmp_elem(elem, pn->info);
+
+  if (cmp < 0) {
+    pn->left = _bst_remove_rec(pn->left, elem, cmp_elem);
+  } else if (cmp > 0) {
+    pn->right = _bst_remove_rec(pn->right, elem, cmp_elem);
+  } else {
+    /* Element found: remove this node */
+    if (!pn->left && !pn->right) {
+      /* Case 1: leaf node, no children */
+      _bst_node_free(pn);
+      return NULL;
+    } else if (!pn->left) {
+      /* Case 2: only right child */
+      ret_node = pn->right;
+      _bst_node_free(pn);
+      return ret_node;
+    } else if (!pn->right) {
+      /* Case 3: only left child */
+      ret_node = pn->left;
+      _bst_node_free(pn);
+      return ret_node;
+    } else {
+      /* Case 4: two children. Replace info with the smallest one in the
+         right subtree and remove that smallest from the right subtree. */
+      aux_info = _bst_find_min_rec(pn->right);
+      pn->info = aux_info;
+      pn->right = _bst_remove_rec(pn->right, aux_info, cmp_elem);
+      return pn;
+    }
+  }
+
+  return pn;
+}
+
+/**
+ * @brief Recursive private function that collects every element of the BST
+ * whose info is in the closed interval [min, max] into a list.
+ *
+ * The traversal is in-order, with smart pruning: we only visit the left
+ * subtree if the current node is greater than min, and we only visit the
+ * right subtree if the current node is smaller than max. Thanks to this
+ * pruning, branches outside the range are never explored, and the resulting
+ * list is sorted by the comparison function.
+ *
+ * @param node Pointer to the current tree node.
+ * @param min Pointer to the lower bound element.
+ * @param max Pointer to the upper bound element.
+ * @param list Pointer to the destination list.
+ * @param cmp Pointer to the comparison function used by the tree.
+ */
+void _tree_rangeSearch_rec(BSTNode *node, void *min, void *max, List *list, P_ele_cmp cmp) {
+  int cmp_min, cmp_max;
+
+  if (!node || !list || !cmp) {
+    return;
+  }
+
+  cmp_min = cmp(node->info, min);
+  cmp_max = cmp(node->info, max);
+
+  /* Only descend left if the current node is strictly greater than min,
+     because every node in the left subtree is smaller than the current. */
+  if (cmp_min > 0) {
+    _tree_rangeSearch_rec(node->left, min, max, list, cmp);
+  }
+
+  /* If the current node is inside [min, max], add it to the list. */
+  if (cmp_min >= 0 && cmp_max <= 0) {
+    list_pushBack(list, node->info);
+  }
+
+  /* Only descend right if the current node is strictly smaller than max,
+     because every node in the right subtree is greater than the current. */
+  if (cmp_max < 0) {
+    _tree_rangeSearch_rec(node->right, min, max, list, cmp);
+  }
+}
+
 /*** BSTree TAD functions ***/
 BSTree *tree_init(P_ele_print print_ele, P_ele_cmp cmp_ele) {
   BSTree *tree;
@@ -332,6 +444,40 @@ Status tree_insert(BSTree *tree, const void *elem) {
   }
 
   return _bst_insert_rec(&(tree->root), elem, tree->cmp_ele);
+}
+
+
+Status tree_remove(BSTree *tree, const void *elem) {
+  if (!tree || !elem) {
+    return ERROR;
+  }
+
+  tree->root = _bst_remove_rec(tree->root, elem, tree->cmp_ele);
+  return OK;
+}
+
+
+List *tree_rangeSearch(const BSTree *tree, void *min, void *max) {
+  List *list = NULL;
+
+  if (!tree || !min || !max) {
+    return NULL;
+  }
+
+  /* If min > max according to the tree's comparison function, the range is
+     empty: return an empty list rather than an error so the caller can
+     safely call list_size / list_print. */
+  list = list_new();
+  if (!list) {
+    return NULL;
+  }
+
+  if (tree->cmp_ele(min, max) > 0) {
+    return list;
+  }
+
+  _tree_rangeSearch_rec(tree->root, min, max, list, tree->cmp_ele);
+  return list;
 }
 
 int tree_countLongSongs(const BSTree *tree, int min_duration) {

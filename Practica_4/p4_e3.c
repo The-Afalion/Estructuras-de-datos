@@ -87,7 +87,8 @@ int main(int argc, char const *argv[]) {
     mainCleanUp(EXIT_FAILURE, tree, radio, f_in);
   }
 
-  fprintf(stdout, "Songs longer than %d seconds: %d\n", min_duration, count);
+  fprintf(stdout, "Número de canciones con duracion mayor a %d segundos: %d\n",
+          min_duration, count);
 
   mainCleanUp(EXIT_SUCCESS, tree, radio, f_in);
   return EXIT_SUCCESS;
